@@ -3,6 +3,12 @@
 <JUCERPROJECT id="mKfRcM" name="Synergy" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="Dt16Io" name="Synergy">
+    <GROUP id="{D0D4ACD6-9EFF-6B5B-481E-14D9180BE13C}" name="Resources">
+      <FILE id="TyMiup" name="SynergyBackgroundWhite.png" compile="0" resource="1"
+            file="Resources/SynergyBackgroundWhite.png"/>
+      <FILE id="gYR1LH" name="SynergyBackgroundV1.png" compile="0" resource="1"
+            file="Resources/SynergyBackgroundV1.png"/>
+    </GROUP>
     <GROUP id="{D5CE428C-4977-D58B-4965-CF59595F8DA3}" name="Source">
       <FILE id="LuSLzF" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>

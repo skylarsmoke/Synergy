@@ -1,0 +1,9 @@
+﻿  PluginEditor.cpp
+  Theme.cpp
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\Theme.cpp(18,26): warning C4458: declaration of 'themeID' hides class member
+  C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\Theme.h(18,6):
+  see declaration of 'Theme::themeID'
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginEditor.cpp(18,51): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginEditor.cpp(16,68): warning C4100: 'slider': unreferenced formal parameter
+  Synergy_SharedCode.vcxproj -> C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Builds\VisualStudio2022\x64\Debug\Shared Code\Synergy.lib
