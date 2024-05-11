@@ -3,5 +3,4 @@
 *.tlog
 *.vsidx
 *.obj
-*.lib
 *.db

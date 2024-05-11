@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "Theme.h"
+#include "SynergyLookAndFeel.h"
 
 //==============================================================================
 /**
@@ -27,18 +28,104 @@ public:
     
 
 private:
+    SynergyLookAndFeel synergyLookAndFeel;
+
     void sliderValueChanged(juce::Slider* slider) override;
     
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     SynergyAudioProcessor& audioProcessor;
 
+    // theme object
     Theme* theme;
 
     juce::Slider midiVolume;
     bool developmentMode = true;
-    bool blackAndWhiteTheme = true;
+
+    // midi reading
+    int note = 36;
+    int midiChannel = 10;
+    double startTime;
+    juce::TextButton bassDrumButton;
+    juce::TextEditor messageBox;
+    juce::Label devModeLabel;
+    
+    juce::ComboBox selectKeyCombo;
+    juce::Label keyLabel;
+
+    juce::ComboBox stemTypeCombo;
+    juce::Label stemTypeLabel;
+
+    juce::TextButton generateButton;
+
+    // main font
+    juce::Font synergyFont;
+
+    // every 12 ints is an octave
+    void setNoteNumber(int noteNumber) {
+        auto message = juce::MidiMessage::noteOn(midiChannel, noteNumber, (juce::uint8)100);
+        message.setTimeStamp(juce::Time::getMillisecondCounterHiRes() * 0.001 - startTime);
+        addMessageToList(message);
+
+        // immediately adding a note off because it is good practice to add a note off for each note on
+        auto messageOff = juce::MidiMessage::noteOff(message.getChannel(), message.getNoteNumber());
+        messageOff.setTimeStamp(juce::Time::getMillisecondCounterHiRes() * 0.001 - startTime);
+        addMessageToList(messageOff);
+    }
+
+    void addMessageToList(const juce::MidiMessage& message) {
+        auto time = message.getTimeStamp();
+
+        auto hours = ((int)(time / 3600.0)) % 24;
+        auto minutes = ((int)(time / 60.0)) % 60;
+        auto seconds = ((int)time) % 60;
+        auto millis = ((int)(time * 1000.0)) % 1000;
+
+        auto timecode = juce::String::formatted("%02d:%02d:%02d.%03d",
+                                                hours,
+                                                minutes,
+                                                seconds,
+                                                millis);
+
+        logMessage(timecode + " - " + getMidiMessageDecription(message));
+    }
+
+    /// <summary>
+    /// Logs data in the message box
+    /// </summary>
+    /// <param name="m"></param>
+    void logMessage(const juce::String& m) {
+        messageBox.moveCaretToEnd();
+        messageBox.insertTextAtCaret(m + juce::newLine);
+    }
+
+    /// <summary>
+    /// Parses the MIDI data to get a human-readable description of the message
+    /// </summary>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    static juce::String getMidiMessageDecription(const juce::MidiMessage& midiData) {
+        if (midiData.isNoteOn()) return "Note on " + juce::MidiMessage::getMidiNoteName(midiData.getNoteNumber(), true, true, 3);
+        if (midiData.isNoteOff()) return "Note off " + juce::MidiMessage::getMidiNoteName(midiData.getNoteNumber(), true, true, 3);
+        if (midiData.isProgramChange()) return "Program change " + juce::String(midiData.getProgramChangeNumber());
+        if (midiData.isPitchWheel()) return "Pitch wheel " + juce::String(midiData.getPitchWheelValue());
+        if (midiData.isAftertouch()) return "After touch " + juce::MidiMessage::getMidiNoteName(midiData.getNoteNumber(), true, true, 3) + ": " + juce::String(midiData.getAfterTouchValue());
+        if (midiData.isChannelPressure()) return "Channel pressure " + juce::String(midiData.getChannelPressureValue());
+        if (midiData.isAllNotesOff()) return "All notes off";
+        if (midiData.isAllSoundOff()) return "All sound off";
+        if (midiData.isMetaEvent()) return "Meta event";
+
+        if (midiData.isController()) {
+            juce::String name(juce::MidiMessage::getControllerName(midiData.getControllerNumber()));
+
+            if (name.isEmpty()) name = "[" + juce::String(midiData.getControllerNumber()) + "]";
+            return "Controller " + name + ": " + juce::String(midiData.getControllerValue());
+        }
+
+        return juce::String::toHexString(midiData.getRawData(), midiData.getRawDataSize());
+    }
 
 
+    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SynergyAudioProcessorEditor)
 };

@@ -6,8 +6,11 @@
 
 #include <map>
 #include <iostream>
+#include <JuceHeader.h>
+
 
 using namespace std;
+using namespace juce;
 
 class Theme
 {
@@ -17,12 +20,8 @@ public:
 	// variables
 	int themeID;
 	map<int, string> themes = { {1, "Default"}, {2, "BlackAndWhite"}};
-
-	/// <summary>
-	/// Gets the current theme ID
-	/// </summary>
-	/// <returns></returns>
-	int getThemeID();
+	Colour mainTextColor;
+	Colour mainButtonColor;
 
 	/// <summary>
 	/// Sets the plugin theme from a theme ID

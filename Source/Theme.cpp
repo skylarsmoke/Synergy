@@ -8,15 +8,24 @@ Theme::Theme() {
 	
 	// TODO: Retrieve saved theme
 
-	themeID = 1;
-}
-
-int Theme::getThemeID() {
-	return this->themeID;
+	this->setTheme(1);
 }
 
 void Theme::setTheme(int themeID) {
 	this->themeID = themeID;
+	
+	// set theme colors
+	switch (themeID) {
+	case 1:
+		// default theme
+		mainTextColor = Colour(150, 150, 150);
+		mainButtonColor = Colour(20, 20, 20);
+		break;
+	case 2:
+		// black and white theme
+
+		break;
+	}
 
 	// TODO: Need to add logic to store the theme using SQLite
 }

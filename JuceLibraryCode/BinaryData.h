@@ -12,7 +12,7 @@ namespace BinaryData
     const int            SynergyBackgroundWhite_pngSize = 222044;
 
     extern const char*   SynergyBackgroundV1_png;
-    const int            SynergyBackgroundV1_pngSize = 284266;
+    const int            SynergyBackgroundV1_pngSize = 255569;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 2;

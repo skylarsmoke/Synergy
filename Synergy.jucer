@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="mKfRcM" name="Synergy" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
+              version="0.0.1" companyName="Rumor">
   <MAINGROUP id="Dt16Io" name="Synergy">
     <GROUP id="{D0D4ACD6-9EFF-6B5B-481E-14D9180BE13C}" name="Resources">
       <FILE id="TyMiup" name="SynergyBackgroundWhite.png" compile="0" resource="1"
@@ -12,6 +13,13 @@
     <GROUP id="{D5CE428C-4977-D58B-4965-CF59595F8DA3}" name="Source">
       <FILE id="LuSLzF" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
+      <FILE id="FFcd6j" name="Theme.cpp" compile="1" resource="0" file="Source/Theme.cpp"/>
+      <FILE id="lwoECO" name="Keys.h" compile="0" resource="0" file="Source/Keys.h"/>
+      <FILE id="YqGm6o" name="SynergyLookAndFeel.cpp" compile="1" resource="0"
+            file="Source/SynergyLookAndFeel.cpp"/>
+      <FILE id="pyayHt" name="SynergyLookAndFeel.h" compile="0" resource="0"
+            file="Source/SynergyLookAndFeel.h"/>
+      <FILE id="sErt8j" name="Theme.h" compile="0" resource="0" file="Source/Theme.h"/>
       <FILE id="i9UCkI" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
       <FILE id="Jp2tJ9" name="PluginEditor.cpp" compile="1" resource="0"
