@@ -3,28 +3,34 @@
   "WorkspaceRootPath": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Builds\\VisualStudio2022\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginEditor.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\SynergyLookAndFeel.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\GenerateButton.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginEditor.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\SynergyLookAndFeel.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\MidiFileDrop.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\skyla\\AppData\\Local\\Temp\\d8f1011d-1afb-4045-87d8-dce2cfa21f6c_LookAndFeelCustomisationTutorial.zip.f6c\\LookAndFeelCustomisationTutorial\\Source\\LookAndFeelCustomisationTutorial_03.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginEditor.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\Theme.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\MidiFileDrop.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\GenerateButton.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\SynergyLookAndFeel.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\Theme.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\skyla\\AppData\\Local\\Temp\\0cf5cf0f-3480-4e06-9bde-a5e90ede26e0_LookAndFeelCustomisationTutorial.zip.6e0\\LookAndFeelCustomisationTutorial\\Source\\LookAndFeelCustomisationTutorial_01.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\Theme.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\SynergyLookAndFeel.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AA13D8FB-2130-B0E1-8A3B-63787BC0532A}|Synergy_SharedCode.vcxproj|C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginProcessor.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
@@ -42,38 +48,51 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 219,
-          "SelectedChildIndex": 0,
+          "DockedWidth": 193,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 5,
+              "Title": "GenerateButton.h",
+              "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\GenerateButton.h",
+              "RelativeDocumentMoniker": "..\\..\\Source\\GenerateButton.h",
+              "ToolTip": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\GenerateButton.h",
+              "RelativeToolTip": "..\\..\\Source\\GenerateButton.h",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAAAAcAAAAzAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-05-14T07:12:27.965Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "PluginEditor.h",
               "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginEditor.h",
               "RelativeDocumentMoniker": "..\\..\\Source\\PluginEditor.h",
               "ToolTip": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginEditor.h",
               "RelativeToolTip": "..\\..\\Source\\PluginEditor.h",
-              "ViewState": "AQIAAB4AAAAAAAAAAAAAACsAAAAAAAAA",
+              "ViewState": "AQIAACcAAAAAAAAAAAAgwC4AAAAfAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-05-04T05:04:44.705Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "PluginProcessor.h",
-              "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginProcessor.h",
-              "RelativeDocumentMoniker": "..\\..\\Source\\PluginProcessor.h",
-              "ToolTip": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginProcessor.h",
-              "RelativeToolTip": "..\\..\\Source\\PluginProcessor.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABgAAAAlAAAA",
+              "DocumentIndex": 4,
+              "Title": "MidiFileDrop.h",
+              "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\MidiFileDrop.h",
+              "RelativeDocumentMoniker": "..\\..\\Source\\MidiFileDrop.h",
+              "ToolTip": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\MidiFileDrop.h",
+              "RelativeToolTip": "..\\..\\Source\\MidiFileDrop.h",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAAACQAAAAbAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-05-04T05:04:48.449Z",
+              "WhenOpened": "2024-05-11T22:22:37.838Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "Keys.h",
               "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\Keys.h",
               "RelativeDocumentMoniker": "..\\..\\Source\\Keys.h",
@@ -85,78 +104,100 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "Theme.h",
               "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\Theme.h",
               "RelativeDocumentMoniker": "..\\..\\Source\\Theme.h",
               "ToolTip": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\Theme.h",
               "RelativeToolTip": "..\\..\\Source\\Theme.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABgAAAAAAAAA",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAABgAAAADAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-05-06T00:09:51.365Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-06T00:09:51.365Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 6,
               "Title": "SynergyLookAndFeel.h",
               "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\SynergyLookAndFeel.h",
               "RelativeDocumentMoniker": "..\\..\\Source\\SynergyLookAndFeel.h",
               "ToolTip": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\SynergyLookAndFeel.h",
               "RelativeToolTip": "..\\..\\Source\\SynergyLookAndFeel.h",
-              "ViewState": "AQIAACoAAAAAAAAAAAAAADEAAABIAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-05-07T05:12:31.477Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-07T05:12:31.477Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "PluginProcessor.h",
+              "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginProcessor.h",
+              "RelativeDocumentMoniker": "..\\..\\Source\\PluginProcessor.h",
+              "ToolTip": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginProcessor.h",
+              "RelativeToolTip": "..\\..\\Source\\PluginProcessor.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAADwAAAAcAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-05-04T05:04:48.449Z"
             }
           ]
         },
         {
-          "DockedWidth": 181,
-          "SelectedChildIndex": 1,
+          "DockedWidth": 207,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
+              "Title": "GenerateButton.cpp",
+              "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\GenerateButton.cpp",
+              "RelativeDocumentMoniker": "..\\..\\Source\\GenerateButton.cpp",
+              "ToolTip": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\GenerateButton.cpp",
+              "RelativeToolTip": "..\\..\\Source\\GenerateButton.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAADUAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-05-14T07:12:23.226Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "PluginEditor.cpp",
               "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginEditor.cpp",
               "RelativeDocumentMoniker": "..\\..\\Source\\PluginEditor.cpp",
               "ToolTip": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginEditor.cpp",
               "RelativeToolTip": "..\\..\\Source\\PluginEditor.cpp",
-              "ViewState": "AQIAAJAAAAAAAAAAAAAAAKUAAAA3AAAA",
+              "ViewState": "AQIAABcAAAAAAAAAAAAAACYAAAAEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-04T05:04:43.807Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "SynergyLookAndFeel.cpp",
-              "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\SynergyLookAndFeel.cpp",
-              "RelativeDocumentMoniker": "..\\..\\Source\\SynergyLookAndFeel.cpp",
-              "ToolTip": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\SynergyLookAndFeel.cpp",
-              "RelativeToolTip": "..\\..\\Source\\SynergyLookAndFeel.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAABFAAAA",
+              "DocumentIndex": 2,
+              "Title": "MidiFileDrop.cpp",
+              "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\MidiFileDrop.cpp",
+              "RelativeDocumentMoniker": "..\\..\\Source\\MidiFileDrop.cpp",
+              "ToolTip": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\MidiFileDrop.cpp",
+              "RelativeToolTip": "..\\..\\Source\\MidiFileDrop.cpp",
+              "ViewState": "AQIAAEgAAAAAAAAAAAAAADIAAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-05-07T05:12:34.058Z",
+              "WhenOpened": "2024-05-11T22:22:24.137Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "PluginProcessor.cpp",
               "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginProcessor.cpp",
               "RelativeDocumentMoniker": "..\\..\\Source\\PluginProcessor.cpp",
               "ToolTip": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\PluginProcessor.cpp",
               "RelativeToolTip": "..\\..\\Source\\PluginProcessor.cpp",
-              "ViewState": "AQIAADkAAAAAAAAAAAAAAJ8AAAATAAAA",
+              "ViewState": "AQIAAL0AAAAAAAAAAAAAANMAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-05-04T05:04:47.509Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-04T05:04:47.509Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "Theme.cpp",
               "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\Theme.cpp",
               "RelativeDocumentMoniker": "..\\..\\Source\\Theme.cpp",
@@ -164,55 +205,19 @@
               "RelativeToolTip": "..\\..\\Source\\Theme.cpp",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-05-06T05:42:32.923Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Orientation": 0,
-      "VerticalTabListWidth": 256,
-      "FloatingWindowState": {
-        "Id": "71c65e3c-de12-4bbb-bbd0-ae32a704fd76",
-        "Display": 0,
-        "X": -5,
-        "Y": 0,
-        "Width": 1191,
-        "Height": 1023,
-        "WindowState": 2
-      },
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "LookAndFeelCustomisationTutorial_03.h",
-              "DocumentMoniker": "C:\\Users\\skyla\\AppData\\Local\\Temp\\d8f1011d-1afb-4045-87d8-dce2cfa21f6c_LookAndFeelCustomisationTutorial.zip.f6c\\LookAndFeelCustomisationTutorial\\Source\\LookAndFeelCustomisationTutorial_03.h",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\d8f1011d-1afb-4045-87d8-dce2cfa21f6c_LookAndFeelCustomisationTutorial.zip.f6c\\LookAndFeelCustomisationTutorial\\Source\\LookAndFeelCustomisationTutorial_03.h",
-              "ToolTip": "C:\\Users\\skyla\\AppData\\Local\\Temp\\d8f1011d-1afb-4045-87d8-dce2cfa21f6c_LookAndFeelCustomisationTutorial.zip.f6c\\LookAndFeelCustomisationTutorial\\Source\\LookAndFeelCustomisationTutorial_03.h [Read Only]",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\d8f1011d-1afb-4045-87d8-dce2cfa21f6c_LookAndFeelCustomisationTutorial.zip.f6c\\LookAndFeelCustomisationTutorial\\Source\\LookAndFeelCustomisationTutorial_03.h [Read Only]",
-              "ViewState": "AQIAAGYAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-05-07T05:20:35.108Z",
-              "EditorCaption": " [Read Only]"
+              "WhenOpened": "2024-05-06T05:42:32.923Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "LookAndFeelCustomisationTutorial_01.h",
-              "DocumentMoniker": "C:\\Users\\skyla\\AppData\\Local\\Temp\\0cf5cf0f-3480-4e06-9bde-a5e90ede26e0_LookAndFeelCustomisationTutorial.zip.6e0\\LookAndFeelCustomisationTutorial\\Source\\LookAndFeelCustomisationTutorial_01.h",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\0cf5cf0f-3480-4e06-9bde-a5e90ede26e0_LookAndFeelCustomisationTutorial.zip.6e0\\LookAndFeelCustomisationTutorial\\Source\\LookAndFeelCustomisationTutorial_01.h",
-              "ToolTip": "C:\\Users\\skyla\\AppData\\Local\\Temp\\0cf5cf0f-3480-4e06-9bde-a5e90ede26e0_LookAndFeelCustomisationTutorial.zip.6e0\\LookAndFeelCustomisationTutorial\\Source\\LookAndFeelCustomisationTutorial_01.h [Read Only]",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\0cf5cf0f-3480-4e06-9bde-a5e90ede26e0_LookAndFeelCustomisationTutorial.zip.6e0\\LookAndFeelCustomisationTutorial\\Source\\LookAndFeelCustomisationTutorial_01.h [Read Only]",
-              "ViewState": "AQIAADMAAAAAAAAAAAAAAFMAAAA0AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-05-07T05:19:57.098Z",
-              "EditorCaption": " [Read Only]"
+              "DocumentIndex": 9,
+              "Title": "SynergyLookAndFeel.cpp",
+              "DocumentMoniker": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\SynergyLookAndFeel.cpp",
+              "RelativeDocumentMoniker": "..\\..\\Source\\SynergyLookAndFeel.cpp",
+              "ToolTip": "C:\\Users\\skyla\\OneDrive\\Desktop\\Rumor\\Development\\Synergy\\Synergy\\Source\\SynergyLookAndFeel.cpp",
+              "RelativeToolTip": "..\\..\\Source\\SynergyLookAndFeel.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAABFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-05-07T05:12:34.058Z"
             }
           ]
         }

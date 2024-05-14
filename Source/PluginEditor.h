@@ -12,6 +12,8 @@
 #include "PluginProcessor.h"
 #include "Theme.h"
 #include "SynergyLookAndFeel.h"
+#include "MidiFileDrop.h"
+#include "GenerateButton.h"
 
 //==============================================================================
 /**
@@ -25,10 +27,12 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
-    
+            
 
 private:
     SynergyLookAndFeel synergyLookAndFeel;
+    MidiFileDrop midiFileDrop;
+    GenerateButton generateButton;
 
     void sliderValueChanged(juce::Slider* slider) override;
     
@@ -56,10 +60,10 @@ private:
     juce::ComboBox stemTypeCombo;
     juce::Label stemTypeLabel;
 
-    juce::TextButton generateButton;
 
     // main font
     juce::Font synergyFont;
+
 
     // every 12 ints is an octave
     void setNoteNumber(int noteNumber) {

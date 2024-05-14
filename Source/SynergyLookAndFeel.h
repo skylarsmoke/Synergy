@@ -11,6 +11,8 @@ class SynergyLookAndFeel : public juce::LookAndFeel_V4
 public:
 	SynergyLookAndFeel();
 
+	
+
 	void drawButtonBackground(juce::Graphics& g, juce::Button& button, const juce::Colour& backgroundColour,
 							  bool, bool isButtonDown) override
 	{
@@ -34,8 +36,7 @@ public:
 	void drawComboBoxTextWhenNothingSelected(juce::Graphics& g, juce::ComboBox& comboBox, juce::Label& label) override
 	{
 		g.setColour(comboBox.findColour(juce::ComboBox::textColourId));
-		
-		
+				
 	}
 
 	void drawComboBox(juce::Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttomW, int buttonH, juce::ComboBox& comboBox) override 
@@ -44,8 +45,6 @@ public:
 		g.setColour(comboBox.findColour(juce::ComboBox::backgroundColourId));
 		
 		g.fillRect(comboArea);
-
-		
 
 		if (isButtonDown || comboBox.isPopupActive() || comboBox.isMouseOver()) {
 			g.setColour(juce::Colour(40, 40, 40));

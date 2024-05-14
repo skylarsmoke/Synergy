@@ -7,10 +7,26 @@
     <GROUP id="{D0D4ACD6-9EFF-6B5B-481E-14D9180BE13C}" name="Resources">
       <FILE id="TyMiup" name="SynergyBackgroundWhite.png" compile="0" resource="1"
             file="Resources/SynergyBackgroundWhite.png"/>
+      <FILE id="Moh24W" name="MidiIcon.png" compile="0" resource="1" file="Resources/MidiIcon.png"/>
+      <FILE id="MUb1Wk" name="CheckMarkIconGlow.png" compile="0" resource="1"
+            file="Resources/CheckMarkIconGlow.png"/>
+      <FILE id="GeMfJY" name="GenerateButton.png" compile="0" resource="1"
+            file="Resources/GenerateButton.png"/>
+      <FILE id="ruItLp" name="GenerateButtonHover.png" compile="0" resource="1"
+            file="Resources/GenerateButtonHover.png"/>
+      <FILE id="lQSIPn" name="CheckMarkIcon.png" compile="0" resource="1"
+            file="Resources/CheckMarkIcon.png"/>
       <FILE id="gYR1LH" name="SynergyBackgroundV1.png" compile="0" resource="1"
             file="Resources/SynergyBackgroundV1.png"/>
     </GROUP>
     <GROUP id="{D5CE428C-4977-D58B-4965-CF59595F8DA3}" name="Source">
+      <FILE id="oDPS9m" name="GenerateButton.cpp" compile="1" resource="0"
+            file="Source/GenerateButton.cpp"/>
+      <FILE id="K0EzEQ" name="GenerateButton.h" compile="0" resource="0"
+            file="Source/GenerateButton.h"/>
+      <FILE id="PVorNR" name="MidiFileDrop.cpp" compile="1" resource="0"
+            file="Source/MidiFileDrop.cpp"/>
+      <FILE id="HEqGhq" name="MidiFileDrop.h" compile="0" resource="0" file="Source/MidiFileDrop.h"/>
       <FILE id="LuSLzF" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="FFcd6j" name="Theme.cpp" compile="1" resource="0" file="Source/Theme.cpp"/>

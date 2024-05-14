@@ -604,6 +604,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\GenerateButton.cpp">
+      <Filter>Synergy\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MidiFileDrop.cpp">
+      <Filter>Synergy\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\PluginProcessor.cpp">
       <Filter>Synergy\Source</Filter>
     </ClCompile>
@@ -3084,6 +3090,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\GenerateButton.h">
+      <Filter>Synergy\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\MidiFileDrop.h">
+      <Filter>Synergy\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Keys.h">
       <Filter>Synergy\Source</Filter>
     </ClInclude>
@@ -5985,6 +5997,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Resources\SynergyBackgroundWhite.png">
+      <Filter>Synergy\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\MidiIcon.png">
+      <Filter>Synergy\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\CheckMarkIconGlow.png">
+      <Filter>Synergy\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\GenerateButton.png">
+      <Filter>Synergy\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\GenerateButtonHover.png">
+      <Filter>Synergy\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\CheckMarkIcon.png">
       <Filter>Synergy\Resources</Filter>
     </None>
     <None Include="..\..\Resources\SynergyBackgroundV1.png">

@@ -1,177 +1,124 @@
-﻿  PluginEditor.cpp
+﻿  GenerateButton.cpp
+  PluginEditor.cpp
   PluginProcessor.cpp
-  SynergyLookAndFeel.cpp
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(28,108): warning C4100: 'shouldDrawButtonAsDown': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(30,108): warning C4100: 'shouldDrawButtonAsDown': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(30,108): warning C4100: 'shouldDrawButtonAsDown': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(28,72): warning C4100: 'shouldDrawButtonAsHighlighted': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(30,72): warning C4100: 'shouldDrawButtonAsHighlighted': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(30,72): warning C4100: 'shouldDrawButtonAsHighlighted': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(34,101): warning C4100: 'label': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(36,101): warning C4100: 'label': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(36,101): warning C4100: 'label': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,124): warning C4100: 'buttonH': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(42,124): warning C4100: 'buttonH': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,111): warning C4100: 'buttomW': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(42,111): warning C4100: 'buttomW': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,98): warning C4100: 'buttonY': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(42,98): warning C4100: 'buttonY': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,85): warning C4100: 'buttonX': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(42,85): warning C4100: 'buttonX': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,54): warning C4100: 'height': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(42,54): warning C4100: 'height': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,43): warning C4100: 'width': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(42,124): warning C4100: 'buttonH': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(42,43): warning C4100: 'width': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,276): warning C4100: 'textColour': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(42,111): warning C4100: 'buttomW': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(42,98): warning C4100: 'buttonY': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(42,85): warning C4100: 'buttonX': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(42,54): warning C4100: 'height': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(42,43): warning C4100: 'width': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(61,276): warning C4100: 'textColour': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,250): warning C4100: 'icon': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(61,250): warning C4100: 'icon': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,211): warning C4100: 'shortcutKeyText': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(61,211): warning C4100: 'shortcutKeyText': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,153): warning C4100: 'hasSubMenu': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(61,153): warning C4100: 'hasSubMenu': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,103): warning C4100: 'isActive': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(61,103): warning C4100: 'isActive': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,85): warning C4100: 'isSeparator': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\GenerateButton.cpp(37,45): warning C4100: 'g': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(61,85): warning C4100: 'isSeparator': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(79,87): warning C4100: 'standardMenuItemHeight': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(78,87): warning C4100: 'standardMenuItemHeight': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(79,70): warning C4100: 'isSeparator': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(61,276): warning C4100: 'textColour': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(78,70): warning C4100: 'isSeparator': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(79,53): warning C4100: 'text': unreferenced formal parameter
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(61,250): warning C4100: 'icon': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(78,53): warning C4100: 'text': unreferenced formal parameter
   (compiling source file '../../Source/PluginProcessor.cpp')
   
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(61,211): warning C4100: 'shortcutKeyText': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(61,153): warning C4100: 'hasSubMenu': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(61,103): warning C4100: 'isActive': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(61,85): warning C4100: 'isSeparator': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(78,87): warning C4100: 'standardMenuItemHeight': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(78,70): warning C4100: 'isSeparator': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(78,53): warning C4100: 'text': unreferenced formal parameter
+  (compiling source file '../../Source/PluginEditor.cpp')
+  
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginEditor.cpp(18,51): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginEditor.cpp(16,68): warning C4100: 'slider': unreferenced formal parameter
 C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginProcessor.cpp(80,52): warning C4100: 'index': unreferenced formal parameter
 C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginProcessor.cpp(84,63): warning C4100: 'index': unreferenced formal parameter
 C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginProcessor.cpp(89,79): warning C4100: 'newName': unreferenced formal parameter
 C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginProcessor.cpp(89,52): warning C4100: 'index': unreferenced formal parameter
 C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginProcessor.cpp(94,67): warning C4100: 'samplesPerBlock': unreferenced formal parameter
 C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginProcessor.cpp(94,51): warning C4100: 'sampleRate': unreferenced formal parameter
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(28,108): warning C4100: 'shouldDrawButtonAsDown': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(28,72): warning C4100: 'shouldDrawButtonAsHighlighted': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(34,101): warning C4100: 'label': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,124): warning C4100: 'buttonH': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,111): warning C4100: 'buttomW': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,98): warning C4100: 'buttonY': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,85): warning C4100: 'buttonX': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,54): warning C4100: 'height': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,43): warning C4100: 'width': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,276): warning C4100: 'textColour': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,250): warning C4100: 'icon': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
 C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginProcessor.cpp(194,69): warning C4100: 'destData': unreferenced formal parameter
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,211): warning C4100: 'shortcutKeyText': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,153): warning C4100: 'hasSubMenu': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,103): warning C4100: 'isActive': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
 C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginProcessor.cpp(201,72): warning C4100: 'sizeInBytes': unreferenced formal parameter
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,85): warning C4100: 'isSeparator': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
 C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginProcessor.cpp(201,62): warning C4100: 'data': unreferenced formal parameter
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(79,87): warning C4100: 'standardMenuItemHeight': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(79,70): warning C4100: 'isSeparator': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(79,53): warning C4100: 'text': unreferenced formal parameter
-  (compiling source file '../../Source/SynergyLookAndFeel.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(28,108): warning C4100: 'shouldDrawButtonAsDown': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(28,72): warning C4100: 'shouldDrawButtonAsHighlighted': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(34,101): warning C4100: 'label': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,124): warning C4100: 'buttonH': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,111): warning C4100: 'buttomW': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,98): warning C4100: 'buttonY': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,85): warning C4100: 'buttonX': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,54): warning C4100: 'height': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(41,43): warning C4100: 'width': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,276): warning C4100: 'textColour': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,250): warning C4100: 'icon': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,211): warning C4100: 'shortcutKeyText': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,153): warning C4100: 'hasSubMenu': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,103): warning C4100: 'isActive': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(62,85): warning C4100: 'isSeparator': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(79,87): warning C4100: 'standardMenuItemHeight': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(79,70): warning C4100: 'isSeparator': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\SynergyLookAndFeel.h(79,53): warning C4100: 'text': unreferenced formal parameter
-  (compiling source file '../../Source/PluginEditor.cpp')
-  
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginEditor.cpp(18,51): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Source\PluginEditor.cpp(16,68): warning C4100: 'slider': unreferenced formal parameter
   Synergy_SharedCode.vcxproj -> C:\Users\skyla\OneDrive\Desktop\Rumor\Development\Synergy\Synergy\Builds\VisualStudio2022\x64\Debug\Shared Code\Synergy.lib

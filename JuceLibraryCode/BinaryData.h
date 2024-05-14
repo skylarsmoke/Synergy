@@ -11,11 +11,26 @@ namespace BinaryData
     extern const char*   SynergyBackgroundWhite_png;
     const int            SynergyBackgroundWhite_pngSize = 222044;
 
+    extern const char*   MidiIcon_png;
+    const int            MidiIcon_pngSize = 1070;
+
+    extern const char*   CheckMarkIconGlow_png;
+    const int            CheckMarkIconGlow_pngSize = 303349;
+
+    extern const char*   GenerateButton_png;
+    const int            GenerateButton_pngSize = 40930;
+
+    extern const char*   GenerateButtonHover_png;
+    const int            GenerateButtonHover_pngSize = 55994;
+
+    extern const char*   CheckMarkIcon_png;
+    const int            CheckMarkIcon_pngSize = 51882;
+
     extern const char*   SynergyBackgroundV1_png;
-    const int            SynergyBackgroundV1_pngSize = 255569;
+    const int            SynergyBackgroundV1_pngSize = 362478;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 2;
+    const int namedResourceListSize = 7;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

@@ -20,8 +20,9 @@ void SynergyAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
 
 //==============================================================================
 SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p), startTime (Time::getMillisecondCounterHiRes() * 0.001) 
+    : AudioProcessorEditor (&p), midiFileDrop (p, messageBox), audioProcessor (p), startTime (Time::getMillisecondCounterHiRes() * 0.001) 
 {
+
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (900, 700);
@@ -31,17 +32,17 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
 
     // theme object
     theme = new Theme();
+    
     setLookAndFeel(&synergyLookAndFeel);
+
+    // generate button
+    addAndMakeVisible(generateButton);
 
     // dev mode label
     devModeLabel.setText("DEVELOPMENT MODE", NotificationType::dontSendNotification);
-    devModeLabel.setColour(Label::textColourId, Colour(100,100,100));
+    devModeLabel.setColour(Label::textColourId, Colour(0,195,255));
     devModeLabel.setFont(synergyFont);
     if (developmentMode) addAndMakeVisible(devModeLabel);
-
-    // generate button
-    generateButton.setButtonText("Generate");
-    addAndMakeVisible(generateButton);
 
     // stem type combo box
     stemTypeLabel.setText("Stem Type", NotificationType::dontSendNotification);
@@ -53,10 +54,6 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     stemTypeCombo.addItem("Chords", 2);
     stemTypeCombo.addItem("Melody", 3);
     stemTypeCombo.setSelectedId(1);
-    /*stemTypeCombo.setColour(ComboBox::backgroundColourId, theme->mainButtonColor);
-    stemTypeCombo.setColour(ComboBox::textColourId, theme->mainTextColor);
-    stemTypeCombo.setColour(ComboBox::outlineColourId, theme->mainButtonColor);
-    stemTypeCombo.setColour(ComboBox::arrowColourId, theme->mainTextColor);*/
     addAndMakeVisible(stemTypeCombo);
 
     // select key combo box
@@ -89,16 +86,7 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     selectKeyCombo.addItem("F# Minor", 22);
     selectKeyCombo.addItem("G Minor", 23);
     selectKeyCombo.addItem("G# Minor", 24);
-    selectKeyCombo.setSelectedId(5);
-
-    /*selectKeyCombo.setColour(ComboBox::backgroundColourId, theme->mainButtonColor);
-    selectKeyCombo.setColour(ComboBox::textColourId, theme->mainTextColor);
-    selectKeyCombo.setColour(ComboBox::outlineColourId, theme->mainButtonColor);
-    selectKeyCombo.setColour(ComboBox::arrowColourId, theme->mainTextColor);*/
-    /*auto test = selectKeyCombo.getRootMenu();
-    test.set
-    selectKeyCombo.setColour(selectKeyCombo.getRootMenu()->backgroundColourId, Colour(30, 30, 30));*/
-    
+    selectKeyCombo.setSelectedId(5);    
     addAndMakeVisible(selectKeyCombo);
 
     // defining parameters of our slider
@@ -130,6 +118,10 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     messageBox.setColour(TextEditor::outlineColourId, Colour(60, 60, 60));
     messageBox.setColour(TextEditor::shadowColourId, Colour(200, 200, 200));
     if (developmentMode) addAndMakeVisible(messageBox);
+
+    // drag and drop midi
+    addAndMakeVisible(midiFileDrop);
+    
 }
 
 SynergyAudioProcessorEditor::~SynergyAudioProcessorEditor()
@@ -163,7 +155,7 @@ void SynergyAudioProcessorEditor::paint (juce::Graphics& g)
     g.setFont (15.0f);
 
     // version text
-    if (developmentMode) g.drawFittedText("Build v0.0.8", 0, 0, getWidth(), 30, juce::Justification::topRight, 1);
+    if (developmentMode) g.drawFittedText("Execution Log           Build v0.1.7", 0, 0, getWidth(), 30, juce::Justification::topRight, 1);
 
     
 }
@@ -193,6 +185,10 @@ void SynergyAudioProcessorEditor::resized()
     stemTypeLabel.setBounds(stemTypeCombo.getBounds().getX() + 10, 90, 200, 200);
 
     // generate button
-    generateButton.setBounds(400, 220, 100, 30);
+    generateButton.setBounds(255, 130, 400, 200);
+
+    // midi file drop
+    midiFileDrop.setBounds(100, 410, 700, 200);
     
 }
+

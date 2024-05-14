@@ -139,6 +139,8 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\GenerateButton.cpp"/>
+    <ClCompile Include="..\..\Source\MidiFileDrop.cpp"/>
     <ClCompile Include="..\..\Source\PluginProcessor.cpp"/>
     <ClCompile Include="..\..\Source\Theme.cpp"/>
     <ClCompile Include="..\..\Source\SynergyLookAndFeel.cpp"/>
@@ -2443,6 +2445,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\GenerateButton.h"/>
+    <ClInclude Include="..\..\Source\MidiFileDrop.h"/>
     <ClInclude Include="..\..\Source\Keys.h"/>
     <ClInclude Include="..\..\Source\SynergyLookAndFeel.h"/>
     <ClInclude Include="..\..\Source\Theme.h"/>
@@ -3412,6 +3416,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Resources\SynergyBackgroundWhite.png"/>
+    <None Include="..\..\Resources\MidiIcon.png"/>
+    <None Include="..\..\Resources\CheckMarkIconGlow.png"/>
+    <None Include="..\..\Resources\GenerateButton.png"/>
+    <None Include="..\..\Resources\GenerateButtonHover.png"/>
+    <None Include="..\..\Resources\CheckMarkIcon.png"/>
     <None Include="..\..\Resources\SynergyBackgroundV1.png"/>
     <None Include="..\..\..\..\..\..\Development\Packages\JUCE\modules\juce_audio_devices\native\oboe\src\common\README.md"/>
     <None Include="..\..\..\..\..\..\Development\Packages\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\README.md"/>

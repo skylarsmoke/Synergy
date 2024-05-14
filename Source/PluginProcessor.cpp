@@ -210,3 +210,10 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new SynergyAudioProcessor();
 }
+
+void SynergyAudioProcessor::loadFile(const juce::String& path) 
+{
+    auto file = File(path);
+    FileInputStream midiStream(file);
+    midiFile.readFrom(midiStream);
+}
