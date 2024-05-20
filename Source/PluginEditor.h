@@ -14,6 +14,12 @@
 #include "SynergyLookAndFeel.h"
 #include "MidiFileDrop.h"
 #include "GenerateButton.h"
+#include "StemTypeCombo.h"
+#include "SelectKeyComboBox.h"
+#include "VelocitySliderOverlay.h"
+#include "Settings.h"
+#include "ProductUnlock.h"
+#include "ProductLockScreen.h"
 
 //==============================================================================
 /**
@@ -33,6 +39,7 @@ private:
     SynergyLookAndFeel synergyLookAndFeel;
     MidiFileDrop midiFileDrop;
     GenerateButton generateButton;
+    ProductLockScreen productLockScreen;
 
     void sliderValueChanged(juce::Slider* slider) override;
     
@@ -54,16 +61,30 @@ private:
     juce::TextEditor messageBox;
     juce::Label devModeLabel;
     
-    juce::ComboBox selectKeyCombo;
-    juce::Label keyLabel;
+    // combo boxes
+    SelectKeyComboBox selectKeyCombo;
+    StemTypeCombo stemTypeCombo;
 
-    juce::ComboBox stemTypeCombo;
-    juce::Label stemTypeLabel;
+    // record panel
+    juce::ImageButton settingsButton;
+    juce::ImageButton previewButton;
+    juce::ImageButton recordButton;
 
+    // sliders
+    juce::Slider noteVelocitySlider;
+    juce::Slider varietySlider;
+    VelocitySliderOverlay velocitySliderOverlay;
+    VelocitySliderOverlay varietySliderOverlay;
+    juce::Label noteVelocityValue;
+    juce::Label varietySliderValue;
 
     // main font
     juce::Font synergyFont;
 
+    /// <summary>
+    /// Opens the settings window
+    /// </summary>
+    void openSettings();
 
     // every 12 ints is an octave
     void setNoteNumber(int noteNumber) {

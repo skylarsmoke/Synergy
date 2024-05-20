@@ -29,9 +29,11 @@ public:
     // allows the generate button to only be clickable on the button
     bool hitTest(int x, int y) override;
 
-private:
-    juce::Rectangle<int> hitArea{ 0, 60, 280, 100 };
     juce::ImageButton generateButton;
+
+private:
+    juce::Rectangle<int> hitArea{ 100, 60, 180, 100 };
+    
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GenerateButton)
 };

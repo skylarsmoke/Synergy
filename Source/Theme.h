@@ -22,6 +22,8 @@ public:
 	map<int, string> themes = { {1, "Default"}, {2, "BlackAndWhite"}};
 	Colour mainTextColor;
 	Colour mainButtonColor;
+	Colour mainSliderColor;
+
 	//Font 
 
 	/// <summary>

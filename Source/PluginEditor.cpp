@@ -9,13 +9,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include <ctime>
+#include <string>
 
 using namespace std;
 using namespace juce;
 
 void SynergyAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
 {
-    audioProcessor.noteOnVel = midiVolume.getValue();
+    if (slider->getComponentID() == "NoteVelocity")
+    {
+        noteVelocityValue.setText((juce::String)noteVelocitySlider.getValue(), juce::NotificationType::dontSendNotification);
+    }
+    else if (slider->getComponentID() == "Variety") {
+        varietySliderValue.setText((juce::String)varietySlider.getValue(), juce::NotificationType::dontSendNotification);
+    }
+    
 }
 
 //==============================================================================
@@ -35,8 +43,67 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     
     setLookAndFeel(&synergyLookAndFeel);
 
+
+    // note velocity slider
+    noteVelocitySlider.setSliderStyle(Slider::SliderStyle::LinearBar);
+    noteVelocitySlider.setRange(0, 100, 1);
+    noteVelocitySlider.setColour(Slider::textBoxOutlineColourId, Colours::transparentBlack);
+    noteVelocitySlider.setColour(Slider::textBoxTextColourId, Colours::transparentBlack);
+    noteVelocitySlider.setValue(100);
+    noteVelocitySlider.setMouseCursor(MouseCursor::PointingHandCursor);
+    noteVelocitySlider.setTextBoxIsEditable(false);
+    noteVelocitySlider.setComponentID("NoteVelocity");
+    noteVelocitySlider.addListener(this);
+    addAndMakeVisible(noteVelocitySlider);
+    addAndMakeVisible(velocitySliderOverlay);
+    
+    noteVelocityValue.setText((juce::String)noteVelocitySlider.getValue(), juce::NotificationType::dontSendNotification);
+    noteVelocityValue.setColour(juce::Label::textColourId, theme->mainSliderColor);
+    noteVelocityValue.setJustificationType(Justification::centred);
+    addAndMakeVisible(noteVelocityValue);
+
+    // variety slider
+    varietySlider.setSliderStyle(Slider::SliderStyle::LinearBar);
+    varietySlider.setRange(0, 100, 1);
+    varietySlider.setColour(Slider::textBoxOutlineColourId, Colours::transparentBlack);
+    varietySlider.setColour(Slider::textBoxTextColourId, Colours::transparentBlack);
+    varietySlider.setValue(100);
+    varietySlider.setMouseCursor(MouseCursor::PointingHandCursor);
+    varietySlider.setTextBoxIsEditable(false);
+    varietySlider.setComponentID("Variety");
+    varietySlider.addListener(this);
+    addAndMakeVisible(varietySlider);
+    addAndMakeVisible(varietySliderOverlay);
+
+    varietySliderValue.setText((juce::String)varietySlider.getValue(), juce::NotificationType::dontSendNotification);
+    varietySliderValue.setColour(juce::Label::textColourId, theme->mainSliderColor);
+    varietySliderValue.setJustificationType(Justification::centred);
+    addAndMakeVisible(varietySliderValue);
+
     // generate button
     addAndMakeVisible(generateButton);
+
+    // settings button
+    Image settingsButtonImage = ImageCache::getFromMemory(BinaryData::settingsIcon_png, BinaryData::settingsIcon_pngSize);
+    Image settingsButtonImageHover = ImageCache::getFromMemory(BinaryData::settingsIconHover_png, BinaryData::settingsIconHover_pngSize);
+    settingsButton.setImages(false, true, true, settingsButtonImage, 1.0f, {}, settingsButtonImageHover, 1.0f, {}, settingsButtonImage, 1.0f, {});
+    settingsButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    settingsButton.onClick = [this] { openSettings(); };
+    addAndMakeVisible(settingsButton);
+
+    // preview button
+    Image previewButtonImage = ImageCache::getFromMemory(BinaryData::previewIcon_png, BinaryData::previewIcon_pngSize);
+    Image previewButtonImageHover = ImageCache::getFromMemory(BinaryData::previewIconHover_png, BinaryData::previewIconHover_pngSize);
+    previewButton.setImages(false, true, true, previewButtonImage, 1.0f, {}, previewButtonImageHover, 1.0f, {}, previewButtonImage, 1.0f, {});
+    previewButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    addAndMakeVisible(previewButton);
+
+    // record button
+    Image recordButtonImage = ImageCache::getFromMemory(BinaryData::recordIcon_png, BinaryData::recordIcon_pngSize);
+    Image recordButtonImageHover = ImageCache::getFromMemory(BinaryData::recordIconHover_png, BinaryData::recordIconHover_pngSize);
+    recordButton.setImages(false, true, true, recordButtonImage, 1.0f, {}, recordButtonImageHover, 1.0f, {}, recordButtonImage, 1.0f, {});
+    recordButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    addAndMakeVisible(recordButton);
 
     // dev mode label
     devModeLabel.setText("DEVELOPMENT MODE", NotificationType::dontSendNotification);
@@ -45,48 +112,9 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     if (developmentMode) addAndMakeVisible(devModeLabel);
 
     // stem type combo box
-    stemTypeLabel.setText("Stem Type", NotificationType::dontSendNotification);
-    stemTypeLabel.setColour(Label::textColourId, theme->mainTextColor);
-    stemTypeLabel.setFont(synergyFont);
-    addAndMakeVisible(stemTypeLabel);
-
-    stemTypeCombo.addItem("Drums", 1);
-    stemTypeCombo.addItem("Chords", 2);
-    stemTypeCombo.addItem("Melody", 3);
-    stemTypeCombo.setSelectedId(1);
     addAndMakeVisible(stemTypeCombo);
 
-    // select key combo box
-    keyLabel.setText("Key", NotificationType::dontSendNotification);
-    keyLabel.setColour(Label::textColourId, theme->mainTextColor);
-    keyLabel.setFont(synergyFont);
-    addAndMakeVisible(keyLabel);
-
-    selectKeyCombo.addItem("Ab Major", 1);
-    selectKeyCombo.addItem("A Major", 2);
-    selectKeyCombo.addItem("Bb Major", 3);
-    selectKeyCombo.addItem("B Major", 4);
-    selectKeyCombo.addItem("C Major", 5);
-    selectKeyCombo.addItem("Db Major", 6);
-    selectKeyCombo.addItem("D Major", 7);
-    selectKeyCombo.addItem("Eb Major", 8);
-    selectKeyCombo.addItem("E Major", 9);
-    selectKeyCombo.addItem("F Major", 10);
-    selectKeyCombo.addItem("F# Major", 11);
-    selectKeyCombo.addItem("G Major", 12);
-    selectKeyCombo.addItem("A Minor", 13);
-    selectKeyCombo.addItem("Bb Minor", 14);
-    selectKeyCombo.addItem("B Minor", 15);
-    selectKeyCombo.addItem("C Minor", 16);
-    selectKeyCombo.addItem("C# Minor", 17);
-    selectKeyCombo.addItem("D Minor", 18);
-    selectKeyCombo.addItem("D# Minor", 19);
-    selectKeyCombo.addItem("E Minor", 20);
-    selectKeyCombo.addItem("F Minor", 21);
-    selectKeyCombo.addItem("F# Minor", 22);
-    selectKeyCombo.addItem("G Minor", 23);
-    selectKeyCombo.addItem("G# Minor", 24);
-    selectKeyCombo.setSelectedId(5);    
+    // select key combo box  
     addAndMakeVisible(selectKeyCombo);
 
     // defining parameters of our slider
@@ -122,6 +150,13 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     // drag and drop midi
     addAndMakeVisible(midiFileDrop);
     
+    /*
+    * Everything after this needs to be last
+    */
+
+    // product authentication
+    addAndMakeVisible(productLockScreen);
+    
 }
 
 SynergyAudioProcessorEditor::~SynergyAudioProcessorEditor()
@@ -141,7 +176,7 @@ void SynergyAudioProcessorEditor::paint (juce::Graphics& g)
     {
         case 1:
             // default theme
-            backgroundImage = juce::ImageCache::getFromMemory(BinaryData::SynergyBackgroundV1_png, BinaryData::SynergyBackgroundV1_pngSize);
+            backgroundImage = juce::ImageCache::getFromMemory(BinaryData::SynergyBackgroundV1transformed_png, BinaryData::SynergyBackgroundV1transformed_pngSize);
             break;
         case 2:
             // black and white theme
@@ -149,21 +184,30 @@ void SynergyAudioProcessorEditor::paint (juce::Graphics& g)
             break;
     }
 
-    g.drawImageAt(backgroundImage, 0, 0);
+    g.drawImageWithin(backgroundImage, 0, 0, this->getWidth(), this->getHeight(), juce::RectanglePlacement::stretchToFit);
+    
+
+    Image settingsBorderImage = ImageCache::getFromMemory(BinaryData::settingsBordertransformed_png, BinaryData::settingsBordertransformed_pngSize);
+    g.drawImageWithin(settingsBorderImage, 190, 280, settingsBorderImage.getWidth() - 190, settingsBorderImage.getHeight() - 190, RectanglePlacement::centred);
+
+    // slider border
+    g.setColour(Colour(20, 20, 20));
+    //g.drawRect(120, 195, 110, 25, 5);
 
     g.setColour (Colour(100,100,100));
     g.setFont (15.0f);
 
     // version text
-    if (developmentMode) g.drawFittedText("Execution Log           Build v0.1.7", 0, 0, getWidth(), 30, juce::Justification::topRight, 1);
+    string versionString = "Execution Log           Build v";
+    if (developmentMode) g.drawFittedText(versionString.append(ProjectInfo::versionString), 0, 0, getWidth(), 30, juce::Justification::topRight, 1);
 
     
 }
 
 void SynergyAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
+    // product lock screen
+    productLockScreen.setBounds(0, 0, 900, 700);
 
     // sets the position and size of the slider with arguments (x, y, width, height)
     midiVolume.setBounds(40, 30, 20, getHeight() - 60);
@@ -177,18 +221,42 @@ void SynergyAudioProcessorEditor::resized()
     devModeLabel.setBounds(0, 0, 150, 15);
 
     // select key combo
-    selectKeyCombo.setBounds(645, 205, 100, 30);
-    keyLabel.setBounds(selectKeyCombo.getBounds().getX() + (selectKeyCombo.getWidth() / 3) - 2, 90, 200, 200);
+    selectKeyCombo.setBounds(660, 260, 140, 40);
 
     // stem type combo
-    stemTypeCombo.setBounds(160, 205, 100, 30);
-    stemTypeLabel.setBounds(stemTypeCombo.getBounds().getX() + 10, 90, 200, 200);
+    stemTypeCombo.setBounds(100, 260, 140, 40);
 
     // generate button
     generateButton.setBounds(255, 130, 400, 200);
 
     // midi file drop
     midiFileDrop.setBounds(100, 410, 700, 200);
+
+    // note velocity slider
+    noteVelocitySlider.setBounds(62, 160, 127, 15);
+    velocitySliderOverlay.setBounds(62, 160, 127, 20);
+    noteVelocityValue.setBounds(100, 180, 50, 10);
+
+    // variety slider
+    varietySlider.setBounds(696, 165, 127, 15);
+    varietySliderOverlay.setBounds(696, 165, 127, 20);
+    varietySliderValue.setBounds(734, 185, 50, 10);
     
+    // settings button
+    settingsButton.setBounds(375, 347, 35, 35);
+
+    // preview button
+    previewButton.setBounds(480, 348, 32, 32);
+
+    // record button
+    recordButton.setBounds(428, 347, 35, 35);
 }
 
+void SynergyAudioProcessorEditor::openSettings() {
+    auto settings = new Settings();
+    settings->setComponentID("Settings");
+    settings->setUsingNativeTitleBar(true);
+    settings->centreWithSize(500, 400);
+    settings->setVisible(true);
+    
+}

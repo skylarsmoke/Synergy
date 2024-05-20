@@ -20,6 +20,7 @@ void Theme::setTheme(int themeID) {
 		// default theme
 		mainTextColor = Colour(150, 150, 150);
 		mainButtonColor = Colour(20, 20, 20);
+		mainSliderColor = Colour(0, 195, 255);
 		break;
 	case 2:
 		// black and white theme

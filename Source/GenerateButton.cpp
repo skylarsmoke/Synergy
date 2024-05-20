@@ -22,8 +22,8 @@ GenerateButton::GenerateButton()
     setSize(300, 300);
 
     // generate button
-    Image generateButtonImage = ImageCache::getFromMemory(BinaryData::GenerateButton_png, BinaryData::GenerateButton_pngSize);
-    Image generateButtonImageHover = ImageCache::getFromMemory(BinaryData::GenerateButtonHover_png, BinaryData::GenerateButtonHover_pngSize);
+    Image generateButtonImage = ImageCache::getFromMemory(BinaryData::GenerateButtontransformed_png, BinaryData::GenerateButtontransformed_pngSize);
+    Image generateButtonImageHover = ImageCache::getFromMemory(BinaryData::GenerateButtonHovertransformed_png, BinaryData::GenerateButtonHovertransformed_pngSize);
     generateButton.setImages(true, true, true, generateButtonImage, 1.0f, {}, generateButtonImageHover, 1.0f, {}, generateButtonImage, 1.0f, {});
     generateButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
     addAndMakeVisible(generateButton);

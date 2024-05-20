@@ -54,7 +54,7 @@ void MidiFileDrop::paint (juce::Graphics& g)
 
         g.setColour(juce::Colour(20, 20, 20));
         g.setFont(synergyFont);
-        g.drawSingleLineText("MIDI Loaded", 300, 130);
+        g.drawSingleLineText("MIDI Loaded", 302, 130);
     }
 
     
