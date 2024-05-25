@@ -19,7 +19,7 @@ using namespace juce;
 //==============================================================================
 /*
 */
-class ProductUnlock : public juce::OnlineUnlockStatus
+class ProductUnlock : public OnlineUnlockStatus
 {
 public:
     ProductUnlock();
@@ -30,7 +30,13 @@ public:
     String getWebsiteName() override;
     URL getServerAuthenticationURL() override;
     RSAKey getPublicKey() override;
+    void saveState(const String&) override {}
+    String getState() override { return {}; }
+    String readReplyFromWebserver(const juce::String& email, const juce::String& password) override;
+    void userCancelled() override;
 
 private:
+    juce::CriticalSection streamCreationLock;
+    std::unique_ptr<juce::WebInputStream> stream;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProductUnlock)
 };

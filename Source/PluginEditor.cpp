@@ -28,11 +28,12 @@ void SynergyAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
 
 //==============================================================================
 SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor& p)
-    : AudioProcessorEditor (&p), midiFileDrop (p, messageBox), audioProcessor (p), startTime (Time::getMillisecondCounterHiRes() * 0.001) 
+    : AudioProcessorEditor (&p), midiFileDrop (p, messageBox), audioProcessor (p), startTime (Time::getMillisecondCounterHiRes() * 0.001),
+    productLockScreen(&productUnlockStatus, messageBox)
 {
 
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
+    startTimer(100);
+    
     setSize (900, 700);
     synergyFont.setBold(true);
     synergyFont.setHeight(14.0f);
@@ -42,7 +43,6 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     theme = new Theme();
     
     setLookAndFeel(&synergyLookAndFeel);
-
 
     // note velocity slider
     noteVelocitySlider.setSliderStyle(Slider::SliderStyle::LinearBar);
@@ -155,7 +155,14 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     */
 
     // product authentication
-    addAndMakeVisible(productLockScreen);
+    //addAndMakeVisible(productLockScreen);
+    addChildComponent(productLockScreen);
+
+    // TODO: implement auto activation checking
+
+    productLockScreen.reactivate();
+
+    showUnlockForm();
     
 }
 
@@ -200,7 +207,7 @@ void SynergyAudioProcessorEditor::paint (juce::Graphics& g)
     // version text
     string versionString = "Execution Log           Build v";
     if (developmentMode) g.drawFittedText(versionString.append(ProjectInfo::versionString), 0, 0, getWidth(), 30, juce::Justification::topRight, 1);
-
+    
     
 }
 
@@ -253,10 +260,38 @@ void SynergyAudioProcessorEditor::resized()
 }
 
 void SynergyAudioProcessorEditor::openSettings() {
+
+    // extra security measure
+    verifyPluginIsActivated();
+
     auto settings = new Settings();
     settings->setComponentID("Settings");
     settings->setUsingNativeTitleBar(true);
     settings->centreWithSize(500, 400);
     settings->setVisible(true);
     
+}
+
+void SynergyAudioProcessorEditor::verifyPluginIsActivated()
+{
+    if (!productUnlockStatus.isUnlocked()) showUnlockForm();
+}
+
+void SynergyAudioProcessorEditor::timerCallback() 
+{
+    if (!isUnlocked && productUnlockStatus.isUnlocked())
+    {
+        isUnlocked = true;
+        unlockPlugin();
+    }
+}
+
+void SynergyAudioProcessorEditor::unlockPlugin()
+{
+    productLockScreen.dismiss();
+}
+
+void SynergyAudioProcessorEditor::showUnlockForm() 
+{
+    productLockScreen.setVisible(true);
 }

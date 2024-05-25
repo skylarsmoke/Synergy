@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="mKfRcM" name="Synergy Bass" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
-              version="0.4.1" companyName="Rumor" companyCopyright="&#169; 2024 Rumor">
+              version="0.4.8" companyName="Rumor" companyCopyright="&#169; 2024 Rumor LLC">
   <MAINGROUP id="Dt16Io" name="Synergy Bass">
     <GROUP id="{D0D4ACD6-9EFF-6B5B-481E-14D9180BE13C}" name="Resources">
       <FILE id="TyMiup" name="SynergyBackgroundWhite.png" compile="0" resource="1"
@@ -87,6 +87,7 @@
             file="Source/ProductLockScreen.cpp"/>
       <FILE id="tRk975" name="ProductLockScreen.h" compile="0" resource="0"
             file="Source/ProductLockScreen.h"/>
+      <FILE id="k8viuR" name="UnlockThread.h" compile="0" resource="0" file="Source/UnlockThread.h"/>
       <FILE id="M04Rxi" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
   </MAINGROUP>

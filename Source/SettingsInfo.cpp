@@ -24,7 +24,22 @@ SettingsInfo::SettingsInfo()
     */
 
     // license key
-    licenseKeyLabel.setText("License Key:", NotificationType::dontSendNotification);
+    // cached license key
+    File licenseFile = File::getSpecialLocation(File::SpecialLocationType::currentApplicationFile).getParentDirectory().getChildFile("sbr_license.txt");
+    String licenseKey = "License Key: ";
+    // if the license file exists we attempt to verify
+    if (licenseFile.existsAsFile())
+    {
+        std::unique_ptr<FileInputStream> inputLicenseFile(licenseFile.createInputStream());
+
+        // if the file was opened
+        if (inputLicenseFile->openedOk())
+        {
+            licenseKey += inputLicenseFile->readString();
+        }
+    }
+
+    licenseKeyLabel.setText(licenseKey, NotificationType::dontSendNotification);
     licenseKeyLabel.setFont(15.0f);
     addAndMakeVisible(licenseKeyLabel);
 

@@ -12,8 +12,10 @@
 #include "ProductLockScreen.h"
 
 //==============================================================================
-ProductLockScreen::ProductLockScreen()
+ProductLockScreen::ProductLockScreen(ProductUnlock* status, TextEditor& messageBox) : messageBox(messageBox), unlockThread(status)
 {
+    startTimer(3000);
+    productUnlockStatus = status;
     setSize(900, 700);
 
     // activation label
@@ -44,6 +46,7 @@ ProductLockScreen::ProductLockScreen()
     activateButton.setColour(TextButton::textColourOffId, Colour(100, 100, 100));
     activateButton.setColour(TextButton::textColourOnId, Colour(100, 100, 100));
     activateButton.setMouseCursor(MouseCursor::PointingHandCursor);
+    activateButton.onClick = [this] { activate(); };
     addAndMakeVisible(activateButton);
 
     // having trouble link
@@ -51,6 +54,13 @@ ProductLockScreen::ProductLockScreen()
     havingTroubleActivatingLink.setColour(HyperlinkButton::textColourId, Colour(60, 60, 60));
     havingTroubleActivatingLink.setURL(URL("https://google.com"));
     addAndMakeVisible(havingTroubleActivatingLink);
+
+    // activation status label
+    activationStatusLabel.setColour(Label::textColourId, Colour(100, 100, 100));
+    activationStatusLabel.setFont(13.8f);
+    activationStatusLabel.setJustificationType(Justification::centred);
+    addChildComponent(activationStatusLabel);
+
 }
 
 ProductLockScreen::~ProductLockScreen()
@@ -85,4 +95,80 @@ void ProductLockScreen::resized()
     // having trouble link
     havingTroubleActivatingLink.setBounds(396, 435, 110, 20);
 
+    // activation status
+    activationStatusLabel.setBounds(300, 410, 300, 20);
+
 }
+
+void ProductLockScreen::timerCallback()
+{
+    if (!unlockThread.unlockData.succeeded)
+    {
+        if (unlockThread.unlockData.errorMessage == "Invalid License Key")
+        {
+            activationStatusLabel.setText("Invalid License Key", NotificationType::dontSendNotification);
+        }
+        else if (unlockThread.unlockData.errorMessage == "This license key is registered to a different machine.")
+        {
+            activationStatusLabel.setText("This license key is registered to a different machine.", NotificationType::dontSendNotification);
+        }
+        else
+        {
+            activationStatusLabel.setText("Unable to activate. Please check your connection.", NotificationType::dontSendNotification);
+        }
+        
+        activateAttempted = false;
+    }
+    else if (unlockThread.unlockData.succeeded && productUnlockStatus->isUnlocked()) {
+        activationStatusLabel.setText("Activation successful.", NotificationType::dontSendNotification);
+        logMessage("Product activated.");
+
+        stopTimer();
+        activateAttempted = false;
+
+        File licenseFile(File::getSpecialLocation(File::SpecialLocationType::currentApplicationFile).getParentDirectory().getChildFile("sbr_license.txt"));
+        licenseFile.replaceWithText(licenseKeyInput.getText());
+    }
+}
+
+void ProductLockScreen::dismiss() 
+{
+    setVisible(false);
+}
+
+void ProductLockScreen::activate()
+{
+    logMessage("Activation initialized.");
+
+    // activation status shown to user
+    activationStatusLabel.setText("Sending request to server...", NotificationType::dontSendNotification);
+    activationStatusLabel.setVisible(true);
+    activateAttempted = true;
+    unlockThread.licenseKey = licenseKeyInput.getText();
+    unlockThread.startThread();
+
+    while (!unlockThread.waitForThreadToExit(0));
+
+    auto x = 0;
+}
+
+void ProductLockScreen::reactivate()
+{
+    // cached license key
+    File licenseFile = File::getSpecialLocation(File::SpecialLocationType::currentApplicationFile).getParentDirectory().getChildFile("sbr_license.txt");
+
+    // if the license file exists we attempt to verify
+    if (licenseFile.existsAsFile())
+    {
+        std::unique_ptr<FileInputStream> inputLicenseFile(licenseFile.createInputStream());
+
+        // if the file was opened
+        if (inputLicenseFile->openedOk())
+        {
+            const String licenseKey = inputLicenseFile->readString();
+            licenseKeyInput.setText(licenseKey, NotificationType::dontSendNotification);
+            activate();
+        }
+    }
+}
+

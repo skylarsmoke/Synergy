@@ -22,6 +22,7 @@ SynergyAudioProcessor::SynergyAudioProcessor()
                        )
 #endif
 {
+    
 }
 
 SynergyAudioProcessor::~SynergyAudioProcessor()
@@ -196,6 +197,7 @@ void SynergyAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+    
 }
 
 void SynergyAudioProcessor::setStateInformation (const void* data, int sizeInBytes)

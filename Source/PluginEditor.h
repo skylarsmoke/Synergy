@@ -24,7 +24,7 @@
 //==============================================================================
 /**
 */
-class SynergyAudioProcessorEditor  : public juce::AudioProcessorEditor, juce::Slider::Listener
+class SynergyAudioProcessorEditor  : public juce::AudioProcessorEditor, juce::Slider::Listener, juce::Timer
 {
 public:
     SynergyAudioProcessorEditor (SynergyAudioProcessor&);
@@ -33,13 +33,18 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
-            
+    
 
 private:
     SynergyLookAndFeel synergyLookAndFeel;
     MidiFileDrop midiFileDrop;
     GenerateButton generateButton;
+
+    // plugin activation
     ProductLockScreen productLockScreen;
+    ProductUnlock productUnlockStatus;
+    
+    bool isUnlocked = false;
 
     void sliderValueChanged(juce::Slider* slider) override;
     
@@ -150,6 +155,10 @@ private:
         return juce::String::toHexString(midiData.getRawData(), midiData.getRawDataSize());
     }
 
+    void timerCallback() override;
+    void unlockPlugin();
+    void showUnlockForm();
+    void verifyPluginIsActivated();
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SynergyAudioProcessorEditor)

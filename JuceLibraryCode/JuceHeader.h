@@ -45,7 +45,7 @@ namespace ProjectInfo
 {
     const char* const  projectName    = "Synergy Bass";
     const char* const  companyName    = "Rumor";
-    const char* const  versionString  = "0.4.1";
-    const int          versionNumber  = 0x401;
+    const char* const  versionString  = "0.4.8";
+    const int          versionNumber  = 0x408;
 }
 #endif
