@@ -13,6 +13,8 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "MidiViewer.h"
+#include "BassGenerator.h"
 
 //==============================================================================
 /*
@@ -20,7 +22,7 @@
 class GenerateButton  : public juce::Component
 {
 public:
-    GenerateButton();
+    GenerateButton(BassGenerator& bassAI, MidiViewer& midiV, ComboBox& stemT, ComboBox& key, Viewport& viewP);
     ~GenerateButton() override;
 
     void paint (juce::Graphics&) override;
@@ -33,6 +35,17 @@ public:
 
 private:
     juce::Rectangle<int> hitArea{ 100, 60, 180, 100 };
+    BassGenerator* bassGenerator;
+    MidiViewer* midiViewer;
+    Viewport* viewport;
+    ComboBox* stemType;
+    ComboBox* musicalKey;
+
+
+    /// <summary>
+    /// Calls logic when the generate button is clicked
+    /// </summary>
+    void generate();
     
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GenerateButton)

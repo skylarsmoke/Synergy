@@ -1,10 +1,3 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
 
 #pragma once
 
@@ -20,6 +13,9 @@
 #include "Settings.h"
 #include "ProductUnlock.h"
 #include "ProductLockScreen.h"
+#include "MidiViewer.h"
+#include "BassGenerator.h"
+#include "GenSplash.h"
 
 //==============================================================================
 /**
@@ -39,6 +35,14 @@ private:
     SynergyLookAndFeel synergyLookAndFeel;
     MidiFileDrop midiFileDrop;
     GenerateButton generateButton;
+    MidiViewer midiViewer;
+    BassGenerator bassAI;
+
+    std::unique_ptr<MidiViewer> midiGrid;
+    juce::Viewport viewport;
+    
+    // uncomment to enable tool tips
+    //TooltipWindow tooltips;
 
     // plugin activation
     ProductLockScreen productLockScreen;

@@ -29,7 +29,7 @@ void SynergyAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
 //==============================================================================
 SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor& p)
     : AudioProcessorEditor (&p), midiFileDrop (p, messageBox), audioProcessor (p), startTime (Time::getMillisecondCounterHiRes() * 0.001),
-    productLockScreen(&productUnlockStatus, messageBox)
+    productLockScreen(&productUnlockStatus, messageBox), generateButton(bassAI, midiViewer, stemTypeCombo.stemTypeCombo, selectKeyCombo.selectKeyCombo, viewport)
 {
 
     startTimer(100);
@@ -96,6 +96,7 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     Image previewButtonImageHover = ImageCache::getFromMemory(BinaryData::previewIconHover_png, BinaryData::previewIconHover_pngSize);
     previewButton.setImages(false, true, true, previewButtonImage, 1.0f, {}, previewButtonImageHover, 1.0f, {}, previewButtonImage, 1.0f, {});
     previewButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    previewButton.setTooltip("Preview Bassline");
     addAndMakeVisible(previewButton);
 
     // record button
@@ -150,20 +151,23 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     // drag and drop midi
     addAndMakeVisible(midiFileDrop);
     
+    // midi viewer
+    viewport.setViewedComponent(&midiViewer, false);
+    addChildComponent(viewport);
+    
     /*
     * Everything after this needs to be last
     */
 
     // product authentication
     //addAndMakeVisible(productLockScreen);
-    addChildComponent(productLockScreen);
+    //addChildComponent(productLockScreen);
 
-    // TODO: implement auto activation checking
+    // product reactivation
+    //productLockScreen.reactivate();
 
-    productLockScreen.reactivate();
+    //showUnlockForm();
 
-    showUnlockForm();
-    
 }
 
 SynergyAudioProcessorEditor::~SynergyAudioProcessorEditor()
@@ -208,6 +212,7 @@ void SynergyAudioProcessorEditor::paint (juce::Graphics& g)
     string versionString = "Execution Log           Build v";
     if (developmentMode) g.drawFittedText(versionString.append(ProjectInfo::versionString), 0, 0, getWidth(), 30, juce::Justification::topRight, 1);
     
+
     
 }
 
@@ -239,6 +244,10 @@ void SynergyAudioProcessorEditor::resized()
     // midi file drop
     midiFileDrop.setBounds(100, 410, 700, 200);
 
+    // midi viewer
+    viewport.setBounds(112, 415, 680, 200);
+    
+
     // note velocity slider
     noteVelocitySlider.setBounds(62, 160, 127, 15);
     velocitySliderOverlay.setBounds(62, 160, 127, 20);
@@ -257,12 +266,30 @@ void SynergyAudioProcessorEditor::resized()
 
     // record button
     recordButton.setBounds(428, 347, 35, 35);
+
+
 }
 
 void SynergyAudioProcessorEditor::openSettings() {
 
     // extra security measure
     verifyPluginIsActivated();
+    
+
+    /*
+    * AI Generation Testing
+    */
+    int inputSize = 3;
+    int hiddenSize = 5;
+
+    /*NeuralNetwork neuralNetwork(3, 5);
+
+    VectorXd x(inputSize);
+    x << 1.0, 2.0, 3.0;
+
+    VectorXd output = neuralNetwork.forward(x);*/
+
+    //cout << "Output: \n" << output << endl;
 
     auto settings = new Settings();
     settings->setComponentID("Settings");

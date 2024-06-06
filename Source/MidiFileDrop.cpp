@@ -35,7 +35,6 @@ void MidiFileDrop::paint (juce::Graphics& g)
        drawing code..
     */
 
-    g.fillAll (juce::Colour(30, 30, 30));   // clear the background
 
     // rectangle styling
     /*g.setColour(juce::Colour(30, 30, 30));

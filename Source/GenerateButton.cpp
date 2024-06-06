@@ -14,7 +14,7 @@
 using namespace juce;
 
 //==============================================================================
-GenerateButton::GenerateButton()
+GenerateButton::GenerateButton(BassGenerator& bassAI, MidiViewer& midiV, ComboBox& stemT, ComboBox& key, Viewport& viewP) : bassGenerator(&bassAI), midiViewer(&midiV), stemType(&stemT), musicalKey(&key), viewport(&viewP)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -26,7 +26,9 @@ GenerateButton::GenerateButton()
     Image generateButtonImageHover = ImageCache::getFromMemory(BinaryData::GenerateButtonHovertransformed_png, BinaryData::GenerateButtonHovertransformed_pngSize);
     generateButton.setImages(true, true, true, generateButtonImage, 1.0f, {}, generateButtonImageHover, 1.0f, {}, generateButtonImage, 1.0f, {});
     generateButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    generateButton.onClick = [this] { generate(); };
     addAndMakeVisible(generateButton);
+
 
 }
 
@@ -50,6 +52,66 @@ bool GenerateButton::hitTest(int x, int y)
 {
     return hitArea.contains(x, y);
 }
+
+void createMidiFile(const std::vector<MidiNote>& notes, const juce::MidiFile& inputMidiFile, const juce::File& outputFile) {
+    juce::MidiMessageSequence sequence;
+    int tpq = 960; // Default to 960 TPQ
+
+    // Search for the tempo track to get ticks per quarter note (TPQ)
+    for (int i = 0; i < inputMidiFile.getNumTracks(); ++i) {
+        auto* midiTrack = inputMidiFile.getTrack(i);
+        for (auto midiEvent : *midiTrack) {
+            if (midiEvent->message.isTempoMetaEvent()) {
+                tpq = inputMidiFile.getTimeFormat();
+                break;
+            }
+        }
+        if (tpq != 960) break; // Break if we have found the TPQ
+    }
+
+    for (const auto& note : notes) {
+        int tick = static_cast<int>(note.startBeat * tpq);
+        int duration = static_cast<int>(note.lengthInBeats * tpq);
+
+        sequence.addEvent(juce::MidiMessage::noteOn(1, note.pitch, (juce::uint8)100), tick);
+        sequence.addEvent(juce::MidiMessage::noteOff(1, note.pitch), tick + duration);
+    }
+
+    juce::MidiFile outputMidiFile;
+    outputMidiFile.setTicksPerQuarterNote(tpq);
+
+    outputMidiFile.addTrack(sequence);
+
+    juce::FileOutputStream outputStream(outputFile);
+    if (!outputStream.openedOk()) {
+        std::cerr << "Failed to open output file stream." << std::endl;
+        return;
+    }
+
+    outputMidiFile.writeTo(outputStream);
+}
+
+void GenerateButton::generate()
+{
+    //bassGenerator->trainFromFolder("C:\\Users\\skyla\\OneDrive\\Desktop\\Unison Essential MIDI Basslines");
+    
+    juce::File midiFile("C:\\Users\\skyla\\OneDrive\\Desktop\\Unison Essential MIDI Basslines\\DHR_125_bass_my_house_Dmin.mid");
+    juce::FileInputStream inputStream(midiFile);
+    juce::MidiFile juceMidiFile;
+    juceMidiFile.readFrom(inputStream);
+    
+    auto test = bassGenerator->generateBassline(juceMidiFile, stemType->getText(), musicalKey->getText().toStdString());
+
+    juce::File outputMidiFilePath("C:\\Users\\skyla\\OneDrive\\Desktop\\test.mid");
+
+    createMidiFile(test, juceMidiFile, outputMidiFilePath);
+
+    midiViewer->setMidiNotes(test);
+    viewport->setVisible(true);
+
+}
+
+
 
 
 
