@@ -46,7 +46,10 @@ public:
     /// </summary>
     /// <param name="inputMidiFile">The melody midi</param>
     /// <returns></returns>
-    std::vector<MidiNote> generateBassline(const MidiFile& inputMidiFile, const String& stemType, const std::string& inputMusicalKey);
+    std::vector<MidiNote> generateBassline(const MidiFile& inputMidiFile, 
+                                           const String& stemType, 
+                                           const std::string& inputMusicalKey, 
+                                           int noteVariety);
 
     
 
@@ -74,7 +77,8 @@ private:
     /// </summary>
     /// <param name="melodyNotes"></param>
     /// <returns></returns>
-    std::vector<MidiNote> generateBasslineFromMelody(const std::vector<MidiNote>& melodyNotes);
+    std::vector<MidiNote> generateBasslineFromMelody(const std::vector<MidiNote>& melodyNotes, 
+                                                     int noteVariety);
 
     /// <summary>
     /// Gets the next note in the chain from the current note

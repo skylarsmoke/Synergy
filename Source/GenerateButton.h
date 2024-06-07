@@ -22,7 +22,13 @@
 class GenerateButton  : public juce::Component
 {
 public:
-    GenerateButton(BassGenerator& bassAI, MidiViewer& midiV, ComboBox& stemT, ComboBox& key, Viewport& viewP);
+    GenerateButton(BassGenerator& bassAI, 
+                   MidiViewer& midiV, 
+                   ComboBox& stemT, 
+                   ComboBox& key, 
+                   Viewport& viewP, 
+                   Slider& varietySliderV);
+
     ~GenerateButton() override;
 
     void paint (juce::Graphics&) override;
@@ -40,6 +46,7 @@ private:
     Viewport* viewport;
     ComboBox* stemType;
     ComboBox* musicalKey;
+    Slider* varietySlider;
 
 
     /// <summary>

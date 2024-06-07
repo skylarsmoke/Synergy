@@ -14,7 +14,18 @@
 using namespace juce;
 
 //==============================================================================
-GenerateButton::GenerateButton(BassGenerator& bassAI, MidiViewer& midiV, ComboBox& stemT, ComboBox& key, Viewport& viewP) : bassGenerator(&bassAI), midiViewer(&midiV), stemType(&stemT), musicalKey(&key), viewport(&viewP)
+GenerateButton::GenerateButton(BassGenerator& bassAI, 
+                               MidiViewer& midiV, 
+                               ComboBox& stemT, 
+                               ComboBox& key, 
+                               Viewport& viewP, 
+                               Slider& varietySliderV) : 
+    bassGenerator(&bassAI), 
+    midiViewer(&midiV), 
+    stemType(&stemT), 
+    musicalKey(&key), 
+    viewport(&viewP), 
+    varietySlider(&varietySliderV)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -100,7 +111,7 @@ void GenerateButton::generate()
     juce::MidiFile juceMidiFile;
     juceMidiFile.readFrom(inputStream);
     
-    auto test = bassGenerator->generateBassline(juceMidiFile, stemType->getText(), musicalKey->getText().toStdString());
+    auto test = bassGenerator->generateBassline(juceMidiFile, stemType->getText(), musicalKey->getText().toStdString(), (int)varietySlider->getValue());
 
     juce::File outputMidiFilePath("C:\\Users\\skyla\\OneDrive\\Desktop\\test.mid");
 

@@ -29,7 +29,7 @@ void SynergyAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
 //==============================================================================
 SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor& p)
     : AudioProcessorEditor (&p), midiFileDrop (p, messageBox), audioProcessor (p), startTime (Time::getMillisecondCounterHiRes() * 0.001),
-    productLockScreen(&productUnlockStatus, messageBox), generateButton(bassAI, midiViewer, stemTypeCombo.stemTypeCombo, selectKeyCombo.selectKeyCombo, viewport)
+    productLockScreen(&productUnlockStatus, messageBox), generateButton(bassAI, midiViewer, stemTypeCombo.stemTypeCombo, selectKeyCombo.selectKeyCombo, viewport, varietySlider)
 {
 
     startTimer(100);
