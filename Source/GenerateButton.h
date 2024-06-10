@@ -15,6 +15,8 @@
 #include <JuceHeader.h>
 #include "MidiViewer.h"
 #include "BassGenerator.h"
+#include "PluginProcessor.h"
+#include "SettingsCache.h"
 
 //==============================================================================
 /*
@@ -27,7 +29,9 @@ public:
                    ComboBox& stemT, 
                    ComboBox& key, 
                    Viewport& viewP, 
-                   Slider& varietySliderV);
+                   Slider& varietySliderV,
+                   SynergyAudioProcessor&,
+                   SettingsCache&);
 
     ~GenerateButton() override;
 
@@ -47,12 +51,28 @@ private:
     ComboBox* stemType;
     ComboBox* musicalKey;
     Slider* varietySlider;
+    SynergyAudioProcessor& audioProcessor;
+    SettingsCache* settingsCache;
 
 
     /// <summary>
     /// Calls logic when the generate button is clicked
     /// </summary>
     void generate();
+
+    /// <summary>
+    /// Creates a midi file from a midi notes vector
+    /// </summary>
+    /// <param name="notes">Notes</param>
+    /// <param name="inputMidiFile">Input Midi File</param>
+    /// <param name="outputFile">Output File</param>
+    void createMidiFile(const std::vector<MidiNote>& notes, const juce::MidiFile& inputMidiFile, const juce::File& outputFile);
+
+    /// <summary>
+    /// Sets the bassline loop from the settings cache
+    /// </summary>
+    /// <returns></returns>
+    int setBasslineLoop();
     
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GenerateButton)

@@ -12,6 +12,8 @@
 
 #include <JuceHeader.h>
 #include "SettingsInfo.h"
+#include "SettingsCache.h"
+#include "PluginProcessor.h"
 
 using namespace juce;
 
@@ -21,7 +23,7 @@ using namespace juce;
 class Settings  : public juce::DocumentWindow
 {
 public:
-    Settings();
+    Settings(SettingsCache& sc, SynergyAudioProcessor& p);
     ~Settings() override;
 
     void paint (juce::Graphics&) override;
@@ -34,6 +36,8 @@ public:
 
 private:
     SettingsInfo* settingsInfo;
+    SettingsCache* settingsCache;
+    SynergyAudioProcessor* audioProcessor;
     
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Settings)

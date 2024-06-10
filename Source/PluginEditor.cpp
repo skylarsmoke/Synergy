@@ -29,7 +29,7 @@ void SynergyAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
 //==============================================================================
 SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor& p)
     : AudioProcessorEditor (&p), midiFileDrop (p, messageBox), audioProcessor (p), startTime (Time::getMillisecondCounterHiRes() * 0.001),
-    productLockScreen(&productUnlockStatus, messageBox), generateButton(bassAI, midiViewer, stemTypeCombo.stemTypeCombo, selectKeyCombo.selectKeyCombo, viewport, varietySlider)
+    productLockScreen(&productUnlockStatus, messageBox), generateButton(bassAI, midiViewer, stemTypeCombo.stemTypeCombo, selectKeyCombo.selectKeyCombo, viewport, varietySlider, p, settingsCache)
 {
 
     startTimer(100);
@@ -38,6 +38,10 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     synergyFont.setBold(true);
     synergyFont.setHeight(14.0f);
     //synergyFont.setTypefaceName("Stars Fighters");
+
+
+    // load settings
+    loadSettings();
 
     // theme object
     theme = new Theme();
@@ -49,7 +53,7 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     noteVelocitySlider.setRange(0, 100, 1);
     noteVelocitySlider.setColour(Slider::textBoxOutlineColourId, Colours::transparentBlack);
     noteVelocitySlider.setColour(Slider::textBoxTextColourId, Colours::transparentBlack);
-    noteVelocitySlider.setValue(100);
+    noteVelocitySlider.setValue(settingsCache.defaultNoteVelocity);
     noteVelocitySlider.setMouseCursor(MouseCursor::PointingHandCursor);
     noteVelocitySlider.setTextBoxIsEditable(false);
     noteVelocitySlider.setComponentID("NoteVelocity");
@@ -67,7 +71,7 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     varietySlider.setRange(0, 100, 1);
     varietySlider.setColour(Slider::textBoxOutlineColourId, Colours::transparentBlack);
     varietySlider.setColour(Slider::textBoxTextColourId, Colours::transparentBlack);
-    varietySlider.setValue(100);
+    varietySlider.setValue(settingsCache.defaultVariety);
     varietySlider.setMouseCursor(MouseCursor::PointingHandCursor);
     varietySlider.setTextBoxIsEditable(false);
     varietySlider.setComponentID("Variety");
@@ -97,6 +101,7 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     previewButton.setImages(false, true, true, previewButtonImage, 1.0f, {}, previewButtonImageHover, 1.0f, {}, previewButtonImage, 1.0f, {});
     previewButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
     previewButton.setTooltip("Preview Bassline");
+    previewButton.onClick = [this] { previewMidi(); };
     addAndMakeVisible(previewButton);
 
     // record button
@@ -111,6 +116,15 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     devModeLabel.setColour(Label::textColourId, Colour(0,195,255));
     devModeLabel.setFont(synergyFont);
     if (developmentMode) addAndMakeVisible(devModeLabel);
+
+    // beta label
+    betaLabel.setText("BETA", NotificationType::dontSendNotification);
+    betaLabel.setColour(Label::textColourId, Colour(0, 195, 255));
+    auto betaFont = juce::Font();
+    betaFont.setHeight(18.0f);
+    betaFont.setBold(true);
+    betaLabel.setFont(betaFont);
+    if (!developmentMode) addAndMakeVisible(betaLabel);
 
     // stem type combo box
     addAndMakeVisible(stemTypeCombo);
@@ -231,6 +245,7 @@ void SynergyAudioProcessorEditor::resized()
     // dev tools
     messageBox.setBounds(690, 20, 200, 100);
     devModeLabel.setBounds(0, 0, 150, 15);
+    betaLabel.setBounds(840, 10, 150, 15);
 
     // select key combo
     selectKeyCombo.setBounds(660, 260, 140, 40);
@@ -274,28 +289,26 @@ void SynergyAudioProcessorEditor::openSettings() {
 
     // extra security measure
     verifyPluginIsActivated();
-    
 
-    /*
-    * AI Generation Testing
-    */
-    int inputSize = 3;
-    int hiddenSize = 5;
-
-    /*NeuralNetwork neuralNetwork(3, 5);
-
-    VectorXd x(inputSize);
-    x << 1.0, 2.0, 3.0;
-
-    VectorXd output = neuralNetwork.forward(x);*/
-
-    //cout << "Output: \n" << output << endl;
-
-    auto settings = new Settings();
+    // Create a new Settings component and manage it with std::unique_ptr
+    settings = std::make_unique<Settings>(settingsCache, audioProcessor);
     settings->setComponentID("Settings");
     settings->setUsingNativeTitleBar(true);
     settings->centreWithSize(500, 400);
     settings->setVisible(true);
+
+    // Add the Settings component to the desktop so it gets its own window
+    juce::DialogWindow::LaunchOptions options;
+    options.content.setOwned(settings.release()); // Transfer ownership to the DialogWindow
+    options.content->setSize(498, 370);
+    options.dialogTitle = "Synergy Bass Settings";
+    options.dialogBackgroundColour = juce::Colours::lightgrey;
+    options.escapeKeyTriggersCloseButton = true;
+    options.useNativeTitleBar = true;
+    options.resizable = false;
+
+    options.launchAsync();
+
     
 }
 
@@ -321,4 +334,59 @@ void SynergyAudioProcessorEditor::unlockPlugin()
 void SynergyAudioProcessorEditor::showUnlockForm() 
 {
     productLockScreen.setVisible(true);
+}
+
+void SynergyAudioProcessorEditor::previewMidi()
+{
+    audioProcessor.playAudio();
+}
+
+void SynergyAudioProcessorEditor::loadSettings()
+{
+    // Define the file path for loading settings
+    File settingsFile(File::getSpecialLocation(File::SpecialLocationType::currentApplicationFile).getParentDirectory().getChildFile("sbr_settings.txt"));
+
+    if (!settingsFile.existsAsFile())
+    {
+        DBG("Settings data is empty.");
+        // this is ok and will happen until users change the default settings
+        // we set default values when this happens
+
+        settingsCache.basslineLoop = 1;
+        settingsCache.defaultVariety = 100;
+        settingsCache.defaultNoteVelocity = 100;
+        settingsCache.previewBass = 3;
+    }
+    else
+    {
+        // Read the JSON string from the file
+        String jsonString = settingsFile.loadFileAsString();
+
+        // Parse the JSON string into a var object
+        var jsonVar = JSON::parse(jsonString);
+
+        if (jsonVar.isVoid())
+        {
+            DBG("Failed to parse JSON.");
+        }
+        else
+        {
+            if (auto* jsonData = jsonVar.getDynamicObject())
+            {
+                settingsCache.basslineLoop = static_cast<int>(jsonData->getProperty("basslineLoop"));
+                settingsCache.defaultVariety = static_cast<int>(jsonData->getProperty("defaultVariety"));
+                settingsCache.defaultNoteVelocity = static_cast<int>(jsonData->getProperty("defaultNoteVelocity"));
+                settingsCache.previewBass = static_cast<int>(jsonData->getProperty("previewBass"));
+                DBG("Settings loaded successfully.");
+            }
+            else
+            {
+                DBG("Invalid JSON structure.");
+            }
+        }
+    }
+
+    // set preview bass
+    audioProcessor.setPreviewBass(settingsCache.previewBass);
+    
 }

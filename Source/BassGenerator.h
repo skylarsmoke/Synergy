@@ -49,7 +49,8 @@ public:
     std::vector<MidiNote> generateBassline(const MidiFile& inputMidiFile, 
                                            const String& stemType, 
                                            const std::string& inputMusicalKey, 
-                                           int noteVariety);
+                                           int noteVariety,
+                                           int loopLength = 4);
 
     
 
@@ -78,7 +79,17 @@ private:
     /// <param name="melodyNotes"></param>
     /// <returns></returns>
     std::vector<MidiNote> generateBasslineFromMelody(const std::vector<MidiNote>& melodyNotes, 
-                                                     int noteVariety);
+                                                     int noteVariety,
+                                                     int loopLength);
+
+    /// <summary>
+    /// Generates a bassline from a given chord progression
+    /// </summary>
+    /// <param name="chordNotes"></param>
+    /// <returns></returns>
+    std::vector<MidiNote> generateBasslineFromChords(const std::vector<MidiNote>& chordNotes,
+                                                     int noteVariety,
+                                                     int loopLength);
 
     /// <summary>
     /// Gets the next note in the chain from the current note

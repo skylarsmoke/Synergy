@@ -19,13 +19,17 @@ GenerateButton::GenerateButton(BassGenerator& bassAI,
                                ComboBox& stemT, 
                                ComboBox& key, 
                                Viewport& viewP, 
-                               Slider& varietySliderV) : 
+                               Slider& varietySliderV,
+                               SynergyAudioProcessor& p,
+                               SettingsCache& sc) :
     bassGenerator(&bassAI), 
     midiViewer(&midiV), 
     stemType(&stemT), 
     musicalKey(&key), 
     viewport(&viewP), 
-    varietySlider(&varietySliderV)
+    varietySlider(&varietySliderV),
+    audioProcessor(p),
+    settingsCache(&sc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -64,7 +68,7 @@ bool GenerateButton::hitTest(int x, int y)
     return hitArea.contains(x, y);
 }
 
-void createMidiFile(const std::vector<MidiNote>& notes, const juce::MidiFile& inputMidiFile, const juce::File& outputFile) {
+void GenerateButton::createMidiFile(const std::vector<MidiNote>&notes, const juce::MidiFile & inputMidiFile, const juce::File & outputFile) {
     juce::MidiMessageSequence sequence;
     int tpq = 960; // Default to 960 TPQ
 
@@ -92,6 +96,7 @@ void createMidiFile(const std::vector<MidiNote>& notes, const juce::MidiFile& in
     outputMidiFile.setTicksPerQuarterNote(tpq);
 
     outputMidiFile.addTrack(sequence);
+    audioProcessor.loadPreviewMidiFile(sequence);
 
     juce::FileOutputStream outputStream(outputFile);
     if (!outputStream.openedOk()) {
@@ -110,8 +115,10 @@ void GenerateButton::generate()
     juce::FileInputStream inputStream(midiFile);
     juce::MidiFile juceMidiFile;
     juceMidiFile.readFrom(inputStream);
+
+    int basslineLoopLength = setBasslineLoop();
     
-    auto test = bassGenerator->generateBassline(juceMidiFile, stemType->getText(), musicalKey->getText().toStdString(), (int)varietySlider->getValue());
+    auto test = bassGenerator->generateBassline(juceMidiFile, stemType->getText(), musicalKey->getText().toStdString(), (int)varietySlider->getValue(), basslineLoopLength);
 
     juce::File outputMidiFilePath("C:\\Users\\skyla\\OneDrive\\Desktop\\test.mid");
 
@@ -120,6 +127,21 @@ void GenerateButton::generate()
     midiViewer->setMidiNotes(test);
     viewport->setVisible(true);
 
+}
+
+int GenerateButton::setBasslineLoop()
+{
+    switch (settingsCache->basslineLoop)
+    {
+    case 1:
+        // ID for 4 bars
+        return 4;
+    case 2:
+        // ID for 2 bars
+        return 8;
+    default:
+        std::cerr << "Bassline loop value not recognized";
+    }
 }
 
 

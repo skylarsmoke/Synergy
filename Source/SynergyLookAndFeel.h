@@ -67,10 +67,12 @@ public:
 	void positionComboBoxText(juce::ComboBox& comboBox, 
 							  juce::Label& label) override
 	{
-		if (comboBox.getComponentID() == "StemType") label.setBounds(43, 0, comboBox.getWidth(), comboBox.getHeight());
-		else if (comboBox.getComponentID() == "Key") label.setBounds(36, 0, comboBox.getWidth(), comboBox.getHeight());
+		if (comboBox.getComponentID() == "StemType") label.setBounds(0, 0, comboBox.getWidth(), comboBox.getHeight());
+		else if (comboBox.getComponentID() == "Key") label.setBounds(0, 0, comboBox.getWidth(), comboBox.getHeight());
+		else if (comboBox.getComponentID() == "BasslineLoop") label.setBounds(0, 0, comboBox.getWidth(), comboBox.getHeight());
+		else if (comboBox.getComponentID() == "PreviewBass") label.setBounds(0, 0, comboBox.getWidth(), comboBox.getHeight());
 		else throw std::exception("Combo box ID not handled.");
-
+		label.setJustificationType(juce::Justification::centred);
 		label.setFont(16.0f);
 
 	}
@@ -90,14 +92,36 @@ public:
 
 		// create rounded rectangle
 		juce::Path p;
-		p.addRoundedRectangle(comboArea, 5.0f);
+		if (comboBox.getComponentID() != "BasslineLoop" && comboBox.getComponentID() != "PreviewBass")
+		{
+			
+			p.addRoundedRectangle(comboArea, 5.0f);
+
+			g.fillPath(p);
+		}
+		else
+		{
+			g.fillRect(0, 0, width, height);
+		}
 		
-		g.fillPath(p);
-		
-		if (isButtonDown || comboBox.isPopupActive() || comboBox.isMouseOver()) {
+		if (comboBox.getComponentID() == "BasslineLoop" || comboBox.getComponentID() == "PreviewBass")
+		{
+			g.setColour(juce::Colour(40, 40, 40));
+			g.drawRect(0, 0, width, height);
+
+			if (isButtonDown || comboBox.isPopupActive() || comboBox.isMouseOver())
+			{
+				g.setColour(juce::Colour(30, 30, 30));
+				g.fillRect(0, 0, width, height);
+			}
+
+		}
+		else if (isButtonDown || comboBox.isPopupActive() || comboBox.isMouseOver()) {
 			g.setColour(juce::Colour(98, 0, 255));
 			g.fillPath(p);
 		}
+
+		
 		
 	}
 
@@ -123,7 +147,8 @@ public:
 	{
 		g.setColour(juce::Colour(20, 20, 20));
 		g.fillRect(area);
-		g.setFont(juce::Font(16.0f));
+
+		if (text != "4 Bars" && text != "8 Bars") g.setFont(juce::Font(16.0f));
 
 		if (isHighlighted || isTicked) 
 		{

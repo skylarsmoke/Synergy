@@ -16,6 +16,7 @@
 #include "MidiViewer.h"
 #include "BassGenerator.h"
 #include "GenSplash.h"
+#include "SettingsCache.h"
 
 //==============================================================================
 /**
@@ -60,7 +61,7 @@ private:
     Theme* theme;
 
     juce::Slider midiVolume;
-    bool developmentMode = true;
+    bool developmentMode = false;
 
     // midi reading
     int note = 36;
@@ -69,6 +70,9 @@ private:
     juce::TextButton bassDrumButton;
     juce::TextEditor messageBox;
     juce::Label devModeLabel;
+
+    // beta label
+    juce::Label betaLabel;
     
     // combo boxes
     SelectKeyComboBox selectKeyCombo;
@@ -89,6 +93,9 @@ private:
 
     // main font
     juce::Font synergyFont;
+
+    // settings cache
+    SettingsCache settingsCache;
 
     /// <summary>
     /// Opens the settings window
@@ -163,6 +170,14 @@ private:
     void unlockPlugin();
     void showUnlockForm();
     void verifyPluginIsActivated();
+    void previewMidi();
+    
+    std::unique_ptr<Settings> settings;
+
+    /// <summary>
+    /// Loads saved settings
+    /// </summary>
+    void loadSettings();
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SynergyAudioProcessorEditor)

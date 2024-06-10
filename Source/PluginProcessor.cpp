@@ -22,11 +22,36 @@ SynergyAudioProcessor::SynergyAudioProcessor()
                        )
 #endif
 {
-    
+    formatManager.registerBasicFormats();
+
+    for (int i = 0; i < 4; i++)
+    {
+        synth.addVoice(new juce::SamplerVoice());
+    }
+
+    std::unique_ptr<juce::AudioFormatReader> audioFormatReader(
+        formatManager.createReaderFor(std::make_unique<juce::MemoryInputStream>(
+            BinaryData::Outta_Space_wav, BinaryData::Outta_Space_wavSize, false
+        ))
+    );
+
+    if (audioFormatReader != nullptr)
+    {
+        juce::BigInteger allNotes;
+        allNotes.setRange(0, 128, true);
+        synth.addSound(new juce::SamplerSound("OuttaSpace", *audioFormatReader,
+                                              allNotes, 36, 0.1, 0.1, 5.0));
+    } 
+
+    /*synth.addVoice(new Bass1Voice());
+    synth.addSound(new Bass1());*/
+
+
 }
 
 SynergyAudioProcessor::~SynergyAudioProcessor()
 {
+   
 }
 
 //==============================================================================
@@ -94,14 +119,16 @@ void SynergyAudioProcessor::changeProgramName (int index, const juce::String& ne
 //==============================================================================
 void SynergyAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    synth.setCurrentPlaybackSampleRate(sampleRate);
+    this->sampleRate = sampleRate;
+    currentPosition = 0.0;
 }
 
 void SynergyAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
+    
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -160,24 +187,44 @@ void SynergyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
 
     buffer.clear();
 
-    juce::MidiBuffer processedMidi;
-
-    for (const auto metadata : midiMessages)
+    if (isPlaying)
     {
-        auto message = metadata.getMessage();
-        const auto time = metadata.samplePosition;
 
-        if (message.isNoteOn())
+        const double ticksPerQuarterNote = ppq;
+        const double secondsPerQuarterNote = 60.0 / bpm;
+        const double samplesPerQuarterNote = sampleRate * secondsPerQuarterNote;
+        const double samplesPerTick = samplesPerQuarterNote / ticksPerQuarterNote;
+
+        const int numSamples = buffer.getNumSamples();
+
+        for (int sample = 0; sample < numSamples; ++sample)
         {
-            message = juce::MidiMessage::noteOn(message.getChannel(),
-                                                message.getNoteNumber(),
-                                                (juce::uint8)noteOnVel);
+            while (midiSequence.getNumEvents() > currentEventIndex &&
+                   midiSequence.getEventTime(currentEventIndex) < currentPosition + (sample / samplesPerTick))
+            {
+                const auto* midiEvent = midiSequence.getEventPointer(currentEventIndex);
+                if (midiEvent->message.isNoteOnOrOff() || midiEvent->message.isController())
+                {
+                    midiMessages.addEvent(midiEvent->message, sample);
+                }
+                ++currentEventIndex;
+            }
         }
 
-        processedMidi.addEvent(message, time);
+        currentPosition += numSamples / samplesPerTick;
+
+        if (currentEventIndex >= midiSequence.getNumEvents())
+        {
+            isPlaying = false; // Stop playing once all events have been processed
+        }
     }
 
-    midiMessages.swapWith(processedMidi);
+    // Process the MIDI messages to ensure they are handled by the synthesizer
+    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+
+    // Clear the midiMessages buffer to prevent them from being sent to the system MIDI device
+    midiMessages.clear();
+
 }
 
 //==============================================================================
@@ -218,4 +265,138 @@ void SynergyAudioProcessor::loadFile(const juce::String& path)
     auto file = File(path);
     FileInputStream midiStream(file);
     midiFile.readFrom(midiStream);
+}
+
+void SynergyAudioProcessor::loadPreviewMidiFile(const juce::MidiMessageSequence midiSeq)
+{
+    midiSequence = midiSeq;
+    //midiSequence.updateMatchedPairs();
+
+    DBG("Loaded MIDI sequence with " << midiSequence.getNumEvents() << " events.");
+
+    for (int i = 0; i < midiSequence.getNumEvents(); ++i)
+    {
+        const auto* midiEvent = midiSequence.getEventPointer(i);
+        DBG("Event " << i << ": timestamp = " << midiEvent->message.getTimeStamp());
+    }
+}
+
+void SynergyAudioProcessor::playAudio()
+{
+    if (midiSequence.getNumEvents() > 0)
+    {
+        isPlaying = true;
+        currentPosition = 0;
+        currentEventIndex = 0;
+    }
+}
+
+void SynergyAudioProcessor::setBPM(double newBPM)
+{
+    bpm = newBPM;
+}
+
+void SynergyAudioProcessor::updateBPMFromHost()
+{
+    if (auto* playHead = getPlayHead())
+    {
+        juce::AudioPlayHead::CurrentPositionInfo info;
+        if (playHead->getCurrentPosition(info))
+        {
+            bpm = info.bpm;
+        }
+    }
+}
+
+void SynergyAudioProcessor::setPreviewBass(int previewBass)
+{
+    synth.clearSounds(); // we clear sounds to make sure we don't have more than one sound playing at a time
+
+    std::unique_ptr<juce::AudioFormatReader> audioFormatReader;
+
+    switch (previewBass)
+    {
+    case 1:
+        // outta space
+        audioFormatReader = std::unique_ptr<juce::AudioFormatReader>(
+            formatManager.createReaderFor(std::make_unique<juce::MemoryInputStream>(
+                BinaryData::Outta_Space_wav, BinaryData::Outta_Space_wavSize, false
+            ))
+        );
+
+        if (audioFormatReader != nullptr)
+        {
+            juce::BigInteger allNotes;
+            allNotes.setRange(0, 128, true);
+            synth.addSound(new juce::SamplerSound("OuttaSpace", *audioFormatReader,
+                                                  allNotes, 36, 0.1, 0.1, 5.0));
+        }
+        break;
+    case 2:
+        // Motion 808
+        audioFormatReader = std::unique_ptr<juce::AudioFormatReader>(
+            formatManager.createReaderFor(std::make_unique<juce::MemoryInputStream>(
+                BinaryData::Motion_808_wav, BinaryData::Motion_808_wavSize, false
+            ))
+        );
+
+        if (audioFormatReader != nullptr)
+        {
+            juce::BigInteger allNotes;
+            allNotes.setRange(0, 128, true);
+            synth.addSound(new juce::SamplerSound("OuttaSpace", *audioFormatReader,
+                                                  allNotes, 36, 0.1, 0.1, 5.0));
+        }
+        break;
+    case 3:
+        // Rock 808
+        audioFormatReader = std::unique_ptr<juce::AudioFormatReader>(
+            formatManager.createReaderFor(std::make_unique<juce::MemoryInputStream>(
+                BinaryData::Rock_808_wav, BinaryData::Rock_808_wavSize, false
+            ))
+        );
+
+        if (audioFormatReader != nullptr)
+        {
+            juce::BigInteger allNotes;
+            allNotes.setRange(0, 128, true);
+            synth.addSound(new juce::SamplerSound("OuttaSpace", *audioFormatReader,
+                                                  allNotes, 36, 0.1, 0.1, 5.0));
+        }
+        break;
+    case 4:
+        // WOW 808
+        audioFormatReader = std::unique_ptr<juce::AudioFormatReader>(
+            formatManager.createReaderFor(std::make_unique<juce::MemoryInputStream>(
+                BinaryData::Wow_808_wav, BinaryData::Wow_808_wavSize, false
+            ))
+        );
+
+        if (audioFormatReader != nullptr)
+        {
+            juce::BigInteger allNotes;
+            allNotes.setRange(0, 128, true);
+            synth.addSound(new juce::SamplerSound("OuttaSpace", *audioFormatReader,
+                                                  allNotes, 36, 0.1, 0.1, 5.0));
+        }
+        break;
+    case 5:
+        // Wub
+        audioFormatReader = std::unique_ptr<juce::AudioFormatReader>(
+            formatManager.createReaderFor(std::make_unique<juce::MemoryInputStream>(
+                BinaryData::Wub_wav, BinaryData::Wub_wavSize, false
+            ))
+        );
+
+        if (audioFormatReader != nullptr)
+        {
+            juce::BigInteger allNotes;
+            allNotes.setRange(0, 128, true);
+            synth.addSound(new juce::SamplerSound("OuttaSpace", *audioFormatReader,
+                                                  allNotes, 41, 0.1, 0.1, 5.0));
+        }
+        break;
+    default:
+        std::cerr << "Unrecognized previewBass code!" << std::endl;
+    }
 }

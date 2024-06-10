@@ -15,10 +15,9 @@
 using namespace std;
 
 //==============================================================================
-SettingsInfo::SettingsInfo()
+SettingsInfo::SettingsInfo(SettingsCache* sc, SynergyAudioProcessor* p) : settingsCache(sc), audioProcessor(p)
 {
     setLookAndFeel(&synergyLookAndFeel);
-
     /*
     * General Settings
     */
@@ -40,12 +39,14 @@ SettingsInfo::SettingsInfo()
     }
 
     licenseKeyLabel.setText(licenseKey, NotificationType::dontSendNotification);
+    licenseKeyLabel.setColour(Label::textColourId, Colour(60, 60, 60));
     licenseKeyLabel.setFont(15.0f);
     addAndMakeVisible(licenseKeyLabel);
 
     // build version
     string versionString = "Build: v";
     buildVersionLabel.setText(versionString.append(ProjectInfo::versionString), NotificationType::dontSendNotification);
+    buildVersionLabel.setColour(Label::textColourId, Colour(60, 60, 60));
     buildVersionLabel.setFont(15.0f);
     addAndMakeVisible(buildVersionLabel);
 
@@ -70,6 +71,52 @@ SettingsInfo::SettingsInfo()
     reportABugButton.setURL((URL)"https://www.google.com");
     addAndMakeVisible(reportABugButton);
 
+    // bassline loop setting
+    basslineLoopSettingLabel.setText("Bassline Loop: ", NotificationType::dontSendNotification);
+    basslineLoopSettingLabel.setFont(16.0f);
+    addAndMakeVisible(basslineLoopSettingLabel);
+
+    basslineLoopSettingCombo.addItem("4 Bars", 1);
+    basslineLoopSettingCombo.addItem("8 Bars", 2);
+    basslineLoopSettingCombo.setSelectedId(settingsCache->basslineLoop);
+    basslineLoopSettingCombo.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    basslineLoopSettingCombo.setComponentID("BasslineLoop");
+    basslineLoopSettingCombo.setColour(juce::ComboBox::backgroundColourId, Colour(15, 15, 15));
+    basslineLoopSettingCombo.setColour(juce::ComboBox::textColourId, Colour(100, 100, 100));
+    basslineLoopSettingCombo.setColour(juce::ComboBox::outlineColourId, Colour(200, 200, 200));
+    basslineLoopSettingCombo.onChange = [this] { updateBasslineLoop(); };
+    addAndMakeVisible(basslineLoopSettingCombo);
+
+    // default variety
+    defaultVarietyLabel.setText("Default Variety: ", NotificationType::dontSendNotification);
+    defaultVarietyLabel.setFont(16.0f);
+    addAndMakeVisible(defaultVarietyLabel);
+
+    defaultVarietyTextEditor.setJustification(juce::Justification::centredTop);
+    defaultVarietyTextEditor.setColour(TextEditor::backgroundColourId, Colour(15, 15, 15));
+    defaultVarietyTextEditor.setColour(TextEditor::textColourId, Colour(100, 100, 100));
+    defaultVarietyTextEditor.setColour(TextEditor::outlineColourId, Colour(40, 40, 40));
+    defaultVarietyTextEditor.setText((String)settingsCache->defaultVariety);
+    defaultVarietyTextEditor.setFont(12.0f);
+    defaultVarietyTextEditor.onTextChange = [this] { updateDefaultVariety(); };
+    defaultVarietyTextEditor.addListener(&textFilter);
+    addAndMakeVisible(defaultVarietyTextEditor);
+
+    // default velocity
+    defaultVelocityLabel.setText("Default Velocity: ", NotificationType::dontSendNotification);
+    defaultVelocityLabel.setFont(16.0f);
+    addAndMakeVisible(defaultVelocityLabel);
+
+    defaultVelocityTextEditor.setJustification(juce::Justification::centredTop);
+    defaultVelocityTextEditor.setColour(TextEditor::backgroundColourId, Colour(15, 15, 15));
+    defaultVelocityTextEditor.setColour(TextEditor::textColourId, Colour(100, 100, 100));
+    defaultVelocityTextEditor.setColour(TextEditor::outlineColourId, Colour(40, 40, 40));
+    defaultVelocityTextEditor.setText((String)settingsCache->defaultNoteVelocity);
+    defaultVelocityTextEditor.setFont(12.0f);
+    defaultVelocityTextEditor.onTextChange = [this] { updateDefaultVelocity(); };
+    defaultVelocityTextEditor.addListener(&textFilter);
+    addAndMakeVisible(defaultVelocityTextEditor);
+
     /*
     * Audio Settings
     */
@@ -87,11 +134,34 @@ SettingsInfo::SettingsInfo()
     audioTitle.setColour(Label::textColourId, Colour(120, 120, 120));
     audioTitle.setVisible(false);
     addChildComponent(audioTitle);
+
+    // preview bass
+    previewBassLabel.setText("Preview Bass: ", NotificationType::dontSendNotification);
+    previewBassLabel.setFont(16.0f);
+    addChildComponent(previewBassLabel);
+
+    previewBassComboBox.addItem("Outta Space", 1);
+    previewBassComboBox.addItem("Motion 808", 2);
+    previewBassComboBox.addItem("Rock 808", 3);
+    previewBassComboBox.addItem("Wow 808", 4);
+    previewBassComboBox.addItem("Wub", 5);
+    previewBassComboBox.setSelectedId(settingsCache->previewBass);
+    previewBassComboBox.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    previewBassComboBox.setComponentID("PreviewBass");
+    previewBassComboBox.setColour(juce::ComboBox::backgroundColourId, Colour(15, 15, 15));
+    previewBassComboBox.setColour(juce::ComboBox::textColourId, Colour(100, 100, 100));
+    previewBassComboBox.setColour(juce::ComboBox::outlineColourId, Colour(200, 200, 200));
+    previewBassComboBox.onChange = [this] { updatePreviewBass(); };
+    addChildComponent(previewBassComboBox);
 }
 
 SettingsInfo::~SettingsInfo()
 {
+    saveSettings();
     setLookAndFeel(nullptr);
+    defaultVarietyTextEditor.removeListener(&textFilter);
+    defaultVelocityTextEditor.removeListener(&textFilter);
+    audioProcessor->setPreviewBass(settingsCache->previewBass);
 }
 
 void SettingsInfo::paint (juce::Graphics& g)
@@ -110,12 +180,27 @@ void SettingsInfo::resized()
 
     // general title
     generalTitle.setBounds(160, 10, 300, 20);
+
+
+    // bassline loop setting
+    basslineLoopSettingLabel.setBounds(160, 40, 120, 20);
+    basslineLoopSettingCombo.setBounds(280, 40, 60, 20);
+
+    // default variety setting
+    defaultVarietyLabel.setBounds(160, 70, 120, 20);
+    defaultVarietyTextEditor.setBounds(280, 70, 60, 20);
+
+    // default velocity setting
+    defaultVelocityLabel.setBounds(160, 100, 120, 20);
+    defaultVelocityTextEditor.setBounds(280, 100, 60, 20);
+
     // build version label
-    buildVersionLabel.setBounds(160, 40, 300, 20);
+    buildVersionLabel.setBounds(160, 140, 300, 20);
     // license key label
-    licenseKeyLabel.setBounds(160, 60, 300, 20);
+    licenseKeyLabel.setBounds(160, 160, 300, 20);
     // report a bug link
     reportABugButton.setBounds(410, 375, 90, 20);
+    
 
     /*
     * Audio Settings
@@ -123,6 +208,10 @@ void SettingsInfo::resized()
 
     // audio title
     audioTitle.setBounds(160, 10, 300, 20);
+
+    // preview bass setting
+    previewBassLabel.setBounds(160, 40, 120, 20);
+    previewBassComboBox.setBounds(270, 40, 120, 20);
 
     // list view buttons
     generalButton.setBounds(0, 0, 150, 40);
@@ -161,18 +250,73 @@ void SettingsInfo::hideGeneralSettings() {
     generalTitle.setVisible(false);
     licenseKeyLabel.setVisible(false);
     buildVersionLabel.setVisible(false);
+    basslineLoopSettingLabel.setVisible(false);
+    basslineLoopSettingCombo.setVisible(false);
+    defaultVarietyLabel.setVisible(false);
+    defaultVarietyTextEditor.setVisible(false);
+    defaultVelocityLabel.setVisible(false);
+    defaultVelocityTextEditor.setVisible(false);
 }
 
 void SettingsInfo::showGeneralSettings() {
     generalTitle.setVisible(true);
     licenseKeyLabel.setVisible(true);
     buildVersionLabel.setVisible(true);
+    basslineLoopSettingLabel.setVisible(true);
+    basslineLoopSettingCombo.setVisible(true);
+    defaultVarietyLabel.setVisible(true);
+    defaultVarietyTextEditor.setVisible(true);
+    defaultVelocityLabel.setVisible(true);
+    defaultVelocityTextEditor.setVisible(true);
 }
 
 void SettingsInfo::hideAudioSettings() {
     audioTitle.setVisible(false);
+    previewBassLabel.setVisible(false);
+    previewBassComboBox.setVisible(false);
 }
 
 void SettingsInfo::showAudioSettings() {
     audioTitle.setVisible(true);
+    previewBassLabel.setVisible(true);
+    previewBassComboBox.setVisible(true);
+}
+
+void SettingsInfo::saveSettings()
+{
+    // create JSON to store settings
+    DynamicObject* jsonData = new DynamicObject();
+    jsonData->setProperty("basslineLoop", basslineLoopSettingCombo.getSelectedId());
+    jsonData->setProperty("defaultVariety", defaultVarietyTextEditor.getText());
+    jsonData->setProperty("defaultNoteVelocity", defaultVelocityTextEditor.getText());
+    jsonData->setProperty("previewBass", previewBassComboBox.getSelectedId());
+
+    // Serialize the JSON object into a string
+    var jsonVar(jsonData);
+    String jsonString = JSON::toString(jsonVar, true);
+
+    File settingsFile(File::getSpecialLocation(File::SpecialLocationType::currentApplicationFile).getParentDirectory().getChildFile("sbr_settings.txt"));
+    settingsFile.replaceWithText(jsonString);
+}
+
+void SettingsInfo::updateBasslineLoop()
+{
+    settingsCache->basslineLoop = basslineLoopSettingCombo.getSelectedId();
+}
+
+void SettingsInfo::updateDefaultVariety()
+{
+    String text = defaultVarietyTextEditor.getText();
+    settingsCache->defaultVariety = text.getIntValue();
+}
+
+void SettingsInfo::updateDefaultVelocity()
+{
+    String text = defaultVelocityTextEditor.getText();
+    settingsCache->defaultNoteVelocity = text.getIntValue();
+}
+
+void SettingsInfo::updatePreviewBass()
+{
+    settingsCache->previewBass = previewBassComboBox.getSelectedId();
 }

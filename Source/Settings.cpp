@@ -12,9 +12,9 @@
 #include "Settings.h"
 
 //==============================================================================
-Settings::Settings() : DocumentWindow("Synergy Bass Settings", Colour(20, 20, 20), DocumentWindow::allButtons)
+Settings::Settings(SettingsCache& sc, SynergyAudioProcessor& p) : DocumentWindow("Synergy Bass Settings", Colour(20, 20, 20), DocumentWindow::allButtons), settingsCache(&sc), audioProcessor(&p)
 {
-    settingsInfo = new SettingsInfo();
+    settingsInfo = new SettingsInfo(settingsCache, audioProcessor);
     settingsInfo->setVisible(true);
     setContentComponent(settingsInfo);
 }

@@ -9,6 +9,8 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Bass1.h"
+#include "Bass1Voice.h"
 
 //==============================================================================
 /**
@@ -55,12 +57,50 @@ public:
 
     void loadFile(const juce::String& path);
     
+    /// <summary>
+    /// Loads the midi sequence created by the markov chain
+    /// </summary>
+    /// <param name="midiSeq"></param>
+    void loadPreviewMidiFile(const juce::MidiMessageSequence midiSeq);
+
+    /// <summary>
+    /// Plays the preview audio for the current midi
+    /// </summary>
+    void playAudio();
+
+    /// <summary>
+    /// Sets the BPM for previewing
+    /// </summary>
+    /// <param name="newBPM">BPM</param>
+    void setBPM(double newBPM);
+
+    /// <summary>
+    /// Sets the preview bass sound on the synth
+    /// </summary>
+    /// <param name="previewBass"></param>
+    void setPreviewBass(int previewBass);
 
     // variables
-    float noteOnVel;
+    float noteOnVel = 0;
     juce::MidiFile midiFile;
 
 private:
+    juce::Synthesiser synth;
+    juce::MidiMessageSequence midiSequence;
+    double currentPosition = 0.0;
+    juce::AudioFormatManager formatManager;
+    double sampleRate = 48000;
+    bool isPlaying = false;
+    int currentEventIndex = 0;
+    double bpm = 175.0;  // Default BPM
+    int ppq = 960;       // Default PPQ
+
+    /// <summary>
+    /// updates the preview BPM from the DAW
+    /// </summary>
+    void updateBPMFromHost();
+
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SynergyAudioProcessor)
 };
