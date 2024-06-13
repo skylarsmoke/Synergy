@@ -28,10 +28,12 @@ public:
     bool isInterestedInFileDrag(const juce::StringArray& files) override;
     void filesDropped(const juce::StringArray& files, int x, int y) override;
 
+    bool midiLoaded;
+
 private:
     SynergyAudioProcessor& audioProcessor;
     juce::TextEditor& messageBox;
-    bool midiLoaded;
+    
 
     // main font
     juce::Font synergyFont;

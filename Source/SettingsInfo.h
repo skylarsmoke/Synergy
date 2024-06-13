@@ -56,6 +56,9 @@ private:
     Label defaultVelocityLabel;
     TextEditor defaultVelocityTextEditor;
 
+    Label toolTipsLabel;
+    ToggleButton toolTipsToggleButton;
+
     // audio settings
     TextButton audioButton;
     Label audioTitle;
@@ -86,6 +89,7 @@ private:
     void updateDefaultVariety();
     void updateDefaultVelocity();
     void updatePreviewBass();
+    void updateTooltip();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsInfo)
 };

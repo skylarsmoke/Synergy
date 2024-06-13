@@ -5,7 +5,7 @@
 * Implementation of the Synergy look and feel class
 */
 
-SynergyLookAndFeel::SynergyLookAndFeel()
+SynergyLookAndFeel::SynergyLookAndFeel(SettingsCache* sc) : settingsCache(sc)
 {
 	synergyFont.setBold(true);
 	synergyFont.setHeight(16.0f);

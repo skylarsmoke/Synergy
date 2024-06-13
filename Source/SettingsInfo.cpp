@@ -117,6 +117,17 @@ SettingsInfo::SettingsInfo(SettingsCache* sc, SynergyAudioProcessor* p) : settin
     defaultVelocityTextEditor.addListener(&textFilter);
     addAndMakeVisible(defaultVelocityTextEditor);
 
+    // tool tips
+    toolTipsLabel.setText("Enable Tooltips: ", NotificationType::dontSendNotification);
+    toolTipsLabel.setFont(16.0f);
+    addAndMakeVisible(toolTipsLabel);
+
+    toolTipsToggleButton.setToggleState(settingsCache->toolTips, juce::dontSendNotification); // Set default state
+    toolTipsToggleButton.setColour(ToggleButton::tickColourId, Colour(100, 100, 100));
+    toolTipsToggleButton.setMouseCursor(MouseCursor::PointingHandCursor);
+    toolTipsToggleButton.onClick = [this] { updateTooltip(); };
+    addAndMakeVisible(toolTipsToggleButton);
+
     /*
     * Audio Settings
     */
@@ -194,10 +205,14 @@ void SettingsInfo::resized()
     defaultVelocityLabel.setBounds(160, 100, 120, 20);
     defaultVelocityTextEditor.setBounds(280, 100, 60, 20);
 
+    // tool tips setting
+    toolTipsLabel.setBounds(160, 130, 120, 20);
+    toolTipsToggleButton.setBounds(276, 130, 21, 20);
+
     // build version label
-    buildVersionLabel.setBounds(160, 140, 300, 20);
+    buildVersionLabel.setBounds(160, 170, 300, 20);
     // license key label
-    licenseKeyLabel.setBounds(160, 160, 300, 20);
+    licenseKeyLabel.setBounds(160, 190, 300, 20);
     // report a bug link
     reportABugButton.setBounds(410, 375, 90, 20);
     
@@ -256,6 +271,8 @@ void SettingsInfo::hideGeneralSettings() {
     defaultVarietyTextEditor.setVisible(false);
     defaultVelocityLabel.setVisible(false);
     defaultVelocityTextEditor.setVisible(false);
+    toolTipsLabel.setVisible(false);
+    toolTipsToggleButton.setVisible(false);
 }
 
 void SettingsInfo::showGeneralSettings() {
@@ -268,6 +285,8 @@ void SettingsInfo::showGeneralSettings() {
     defaultVarietyTextEditor.setVisible(true);
     defaultVelocityLabel.setVisible(true);
     defaultVelocityTextEditor.setVisible(true);
+    toolTipsLabel.setVisible(true);
+    toolTipsToggleButton.setVisible(true);
 }
 
 void SettingsInfo::hideAudioSettings() {
@@ -290,6 +309,7 @@ void SettingsInfo::saveSettings()
     jsonData->setProperty("defaultVariety", defaultVarietyTextEditor.getText());
     jsonData->setProperty("defaultNoteVelocity", defaultVelocityTextEditor.getText());
     jsonData->setProperty("previewBass", previewBassComboBox.getSelectedId());
+    jsonData->setProperty("toolTips", toolTipsToggleButton.getToggleStateValue().getValue());
 
     // Serialize the JSON object into a string
     var jsonVar(jsonData);
@@ -319,4 +339,9 @@ void SettingsInfo::updateDefaultVelocity()
 void SettingsInfo::updatePreviewBass()
 {
     settingsCache->previewBass = previewBassComboBox.getSelectedId();
+}
+
+void SettingsInfo::updateTooltip()
+{
+    settingsCache->toolTips = toolTipsToggleButton.getToggleStateValue().getValue();
 }

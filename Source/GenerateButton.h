@@ -13,10 +13,12 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "MidiViewer.h"
 #include "BassGenerator.h"
 #include "PluginProcessor.h"
 #include "SettingsCache.h"
+
+// Forward declaration
+class MidiViewer;
 
 //==============================================================================
 /*
@@ -43,6 +45,8 @@ public:
 
     juce::ImageButton generateButton;
 
+    juce::MidiFile outputMidiFile;
+
 private:
     juce::Rectangle<int> hitArea{ 100, 60, 180, 100 };
     BassGenerator* bassGenerator;
@@ -66,7 +70,7 @@ private:
     /// <param name="notes">Notes</param>
     /// <param name="inputMidiFile">Input Midi File</param>
     /// <param name="outputFile">Output File</param>
-    void createMidiFile(const std::vector<MidiNote>& notes, const juce::MidiFile& inputMidiFile, const juce::File& outputFile);
+    void createMidiFile(const std::vector<MidiNote>& notes, const juce::MidiFile& inputMidiFile);
 
     /// <summary>
     /// Sets the bassline loop from the settings cache

@@ -22,7 +22,8 @@ StemTypeCombo::StemTypeCombo()
     stemTypeCombo.addItem("Drums", 1);
     stemTypeCombo.addItem("Chords", 2);
     stemTypeCombo.addItem("Melody", 3);
-    stemTypeCombo.setSelectedId(1);
+    stemTypeCombo.setSelectedId(3);
+    stemTypeCombo.setTooltip("The type of midi you have uploaded.");
     stemTypeCombo.setMouseCursor(juce::MouseCursor::PointingHandCursor);
 
     addAndMakeVisible(stemTypeCombo);

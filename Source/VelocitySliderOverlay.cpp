@@ -16,7 +16,7 @@ VelocitySliderOverlay::VelocitySliderOverlay()
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-
+    
 }
 
 VelocitySliderOverlay::~VelocitySliderOverlay()
@@ -33,6 +33,7 @@ void VelocitySliderOverlay::paint (juce::Graphics& g)
     g.fillRect(78, 0, 3, 15);
     g.fillRect(94, 0, 3, 15);
     g.fillRect(110, 0, 3, 15);
+    
 }
 
 void VelocitySliderOverlay::resized()

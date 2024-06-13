@@ -92,6 +92,13 @@ private:
                                                      int loopLength);
 
     /// <summary>
+    /// Generates bassline from a given drum midi
+    /// </summary>
+    std::vector<MidiNote> generateBasslineFromDrums(const std::vector<MidiNote>& drumNotes,
+                                                    int noteVariety,
+                                                    int loopLength);
+
+    /// <summary>
     /// Gets the next note in the chain from the current note
     /// </summary>
     /// <param name="currentNote">Current Note</param>

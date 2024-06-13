@@ -184,6 +184,14 @@ std::vector<MidiNote> BassGenerator::generateBassline(const MidiFile& inputMidiF
         // then we generate a bassline from the chord notes
         newBassline = generateBasslineFromChords(chordNotes, noteVariety, loopLength);
     }
+    else if (stemType == "Drums")
+    {
+        // we first extract the midi notes
+        std::vector<MidiNote> drumNotes = extractMidiNotes(inputMidiFile);
+
+        // then we generate a bassline from the drum notes
+        newBassline = generateBasslineFromDrums(drumNotes, noteVariety, loopLength);
+    }
 
    
     return newBassline;
@@ -373,6 +381,124 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
 
         // Ensure the note fits within the remaining beats
         noteLength = std::min(noteLength, maxBeats - totalBeats);
+
+        // Limit the number of attempts to find a valid note to avoid infinite loops
+        int attempts = 0;
+        const int maxAttempts = 10;
+
+        while (!isNoteInScale(bassPitch) && attempts < maxAttempts)
+        {
+            bassPitch = std::rand() % 128;
+            // Constrain the pitch to within one octave of the reference pitch
+            while (bassPitch < referencePitch - 12) bassPitch += 12;
+            while (bassPitch > referencePitch + 12) bassPitch -= 12;
+            attempts++;
+        }
+
+        if (isNoteInScale(bassPitch))
+        {
+            MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
+            basslineNotes.push_back(newNote);
+            loopedBassline.push_back(newNote);
+        }
+        else
+        {
+            // If no valid note was found, use the closest note in the scale
+            bassPitch = scales[musicalKey][std::rand() % scales[musicalKey].size()];
+            // Constrain the pitch to within one octave of the reference pitch
+            while (bassPitch < referencePitch - 12) bassPitch += 12;
+            while (bassPitch > referencePitch + 12) bassPitch -= 12;
+            MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
+            basslineNotes.push_back(newNote);
+            loopedBassline.push_back(newNote);
+        }
+
+        totalBeats += noteLength;
+    }
+
+    return basslineNotes;
+}
+
+std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector<MidiNote>& drumNotes,
+                                                               int noteVariety,
+                                                               int loopLength)
+{
+    std::vector<MidiNote> basslineNotes;
+    std::vector<MidiNote> loopedBassline;
+    float totalBeats = 0.0f;
+    float barLength = 4.0f; // Assuming 4 beats per bar
+    float maxBeats = 8 * barLength; // 8 bars
+    float loopBeats = loopLength * barLength; // Length of the loop in beats
+
+    if (drumNotes.empty()) return basslineNotes;
+
+    // Filter out kick drum notes (assuming MIDI note number 36 for kick)
+    std::vector<MidiNote> kickNotes;
+    for (const auto& note : drumNotes)
+    {
+        if (note.pitch == 36) // MIDI note number for kick drum
+        {
+            kickNotes.push_back(note);
+        }
+    }
+
+    if (kickNotes.empty()) return basslineNotes;
+
+    // Extract beat markers from kick notes
+    std::vector<float> beatMarkers;
+    for (const auto& kickNote : kickNotes)
+    {
+        beatMarkers.push_back(kickNote.startBeat);
+    }
+
+    // Use the first kick note's startBeat as the reference
+    float referenceBeat = kickNotes[0].startBeat;
+
+    while (totalBeats < maxBeats)
+    {
+        // If we're at the start of a loop, and we have a saved loop, append the saved loop
+        if (totalBeats > 0 && static_cast<int>(totalBeats) % static_cast<int>(loopBeats) == 0 && !loopedBassline.empty())
+        {
+            for (const auto& note : loopedBassline)
+            {
+                MidiNote loopedNote = note;
+                loopedNote.startBeat += loopBeats;
+                basslineNotes.push_back(loopedNote);
+            }
+            totalBeats += loopBeats;
+            continue;
+        }
+
+        // Select a beat marker for the current beat
+        float currentBeat = std::fmod(totalBeats, loopBeats);
+        auto it = std::lower_bound(beatMarkers.begin(), beatMarkers.end(), currentBeat);
+        if (it == beatMarkers.end()) it = beatMarkers.begin(); // Loop back if no beat marker is found
+
+        float beatMarker = *it;
+
+        // Determine if we should use a beat marker or generate a new one based on noteVariety
+        int useBeatMarker = std::rand() % 100;
+        if (useBeatMarker >= noteVariety)
+        {
+            beatMarker += (std::rand() % 4 + 1) * 0.25f; // Randomly shift the beat marker within a quarter note
+            beatMarker = std::fmod(beatMarker, loopBeats); // Ensure it stays within the loop length
+        }
+
+        // Generate a bass note based on the beat marker
+        int bassPitch = getNextNoteFromChain(static_cast<int>(referenceBeat)).pitch;
+
+        // Constrain the pitch to within one octave of a reference note (e.g., C2, MIDI note number 36)
+        int referencePitch = 36; // C2
+        while (bassPitch < referencePitch - 12) bassPitch += 12;
+        while (bassPitch > referencePitch + 12) bassPitch -= 12;
+
+        bassPitch = std::max(0, std::min(127, bassPitch));
+
+        // Randomize the note length between a quarter note (1 beat) and a whole note (4 beats)
+        float noteLength = (std::rand() % 4 + 1) * 1.0f;
+
+        // Ensure the note fits within the remaining beats
+        noteLength = std::min(noteLength, loopBeats - currentBeat);
 
         // Limit the number of attempts to find a valid note to avoid infinite loops
         int attempts = 0;

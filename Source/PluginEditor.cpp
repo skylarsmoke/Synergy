@@ -29,7 +29,8 @@ void SynergyAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
 //==============================================================================
 SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor& p)
     : AudioProcessorEditor (&p), midiFileDrop (p, messageBox), audioProcessor (p), startTime (Time::getMillisecondCounterHiRes() * 0.001),
-    productLockScreen(&productUnlockStatus, messageBox), generateButton(bassAI, midiViewer, stemTypeCombo.stemTypeCombo, selectKeyCombo.selectKeyCombo, viewport, varietySlider, p, settingsCache)
+    productLockScreen(&productUnlockStatus, messageBox), generateButton(bassAI, midiViewer, stemTypeCombo.stemTypeCombo, selectKeyCombo.selectKeyCombo, viewport, varietySlider, p, settingsCache), 
+    synergyLookAndFeel(&settingsCache), midiDragOutput(generateButton), midiViewer(midiDragOutput, 10)
 {
 
     startTimer(100);
@@ -38,15 +39,16 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     synergyFont.setBold(true);
     synergyFont.setHeight(14.0f);
     //synergyFont.setTypefaceName("Stars Fighters");
-
+    
 
     // load settings
     loadSettings();
-
+    
     // theme object
     theme = new Theme();
     
     setLookAndFeel(&synergyLookAndFeel);
+    tooltipWindow.setLookAndFeel(&synergyLookAndFeel);
 
     // note velocity slider
     noteVelocitySlider.setSliderStyle(Slider::SliderStyle::LinearBar);
@@ -64,6 +66,7 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     noteVelocityValue.setText((juce::String)noteVelocitySlider.getValue(), juce::NotificationType::dontSendNotification);
     noteVelocityValue.setColour(juce::Label::textColourId, theme->mainSliderColor);
     noteVelocityValue.setJustificationType(Justification::centred);
+    noteVelocityValue.setTooltip("Sets the velocity of each note in the generated bassline.");
     addAndMakeVisible(noteVelocityValue);
 
     // variety slider
@@ -82,6 +85,7 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     varietySliderValue.setText((juce::String)varietySlider.getValue(), juce::NotificationType::dontSendNotification);
     varietySliderValue.setColour(juce::Label::textColourId, theme->mainSliderColor);
     varietySliderValue.setJustificationType(Justification::centred);
+    varietySliderValue.setTooltip("Determines how different notes can be from the reference midi. The lower the variety the more bassline like midi you will generate.");
     addAndMakeVisible(varietySliderValue);
 
     // generate button
@@ -93,6 +97,7 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     settingsButton.setImages(false, true, true, settingsButtonImage, 1.0f, {}, settingsButtonImageHover, 1.0f, {}, settingsButtonImage, 1.0f, {});
     settingsButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
     settingsButton.onClick = [this] { openSettings(); };
+    settingsButton.setTooltip("Settings");
     addAndMakeVisible(settingsButton);
 
     // preview button
@@ -105,11 +110,13 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     addAndMakeVisible(previewButton);
 
     // record button
-    Image recordButtonImage = ImageCache::getFromMemory(BinaryData::recordIcon_png, BinaryData::recordIcon_pngSize);
-    Image recordButtonImageHover = ImageCache::getFromMemory(BinaryData::recordIconHover_png, BinaryData::recordIconHover_pngSize);
-    recordButton.setImages(false, true, true, recordButtonImage, 1.0f, {}, recordButtonImageHover, 1.0f, {}, recordButtonImage, 1.0f, {});
-    recordButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
-    addAndMakeVisible(recordButton);
+    Image recordButtonImage = ImageCache::getFromMemory(BinaryData::refreshIcon_png, BinaryData::refreshIcon_pngSize);
+    Image recordButtonImageHover = ImageCache::getFromMemory(BinaryData::refreshIconHover_png, BinaryData::refreshIconHover_pngSize);
+    refreshButton.setImages(false, true, true, recordButtonImage, 1.0f, {}, recordButtonImageHover, 1.0f, {}, recordButtonImage, 1.0f, {});
+    refreshButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    refreshButton.setTooltip("Refresh Midi");
+    refreshButton.onClick = [this] { refreshMidi(); };
+    addAndMakeVisible(refreshButton);
 
     // dev mode label
     devModeLabel.setText("DEVELOPMENT MODE", NotificationType::dontSendNotification);
@@ -168,6 +175,9 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     // midi viewer
     viewport.setViewedComponent(&midiViewer, false);
     addChildComponent(viewport);
+
+    // midi drag output
+    addChildComponent(midiDragOutput);
     
     /*
     * Everything after this needs to be last
@@ -187,6 +197,7 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
 SynergyAudioProcessorEditor::~SynergyAudioProcessorEditor()
 {
     setLookAndFeel(nullptr);
+    //tooltipWindow = nullptr;
 }
 
 //==============================================================================
@@ -259,10 +270,12 @@ void SynergyAudioProcessorEditor::resized()
     // midi file drop
     midiFileDrop.setBounds(100, 410, 700, 200);
 
+    // midi drag output
+    midiDragOutput.setBounds(100, 410, 700, 200);
+
     // midi viewer
     viewport.setBounds(112, 415, 680, 200);
     
-
     // note velocity slider
     noteVelocitySlider.setBounds(62, 160, 127, 15);
     velocitySliderOverlay.setBounds(62, 160, 127, 20);
@@ -280,7 +293,7 @@ void SynergyAudioProcessorEditor::resized()
     previewButton.setBounds(480, 348, 32, 32);
 
     // record button
-    recordButton.setBounds(428, 347, 35, 35);
+    refreshButton.setBounds(431, 350, 28, 28);
 
 
 }
@@ -356,6 +369,7 @@ void SynergyAudioProcessorEditor::loadSettings()
         settingsCache.defaultVariety = 100;
         settingsCache.defaultNoteVelocity = 100;
         settingsCache.previewBass = 3;
+        settingsCache.toolTips = true;
     }
     else
     {
@@ -377,6 +391,7 @@ void SynergyAudioProcessorEditor::loadSettings()
                 settingsCache.defaultVariety = static_cast<int>(jsonData->getProperty("defaultVariety"));
                 settingsCache.defaultNoteVelocity = static_cast<int>(jsonData->getProperty("defaultNoteVelocity"));
                 settingsCache.previewBass = static_cast<int>(jsonData->getProperty("previewBass"));
+                settingsCache.toolTips = static_cast<bool>(jsonData->getProperty("toolTips"));
                 DBG("Settings loaded successfully.");
             }
             else
@@ -389,4 +404,18 @@ void SynergyAudioProcessorEditor::loadSettings()
     // set preview bass
     audioProcessor.setPreviewBass(settingsCache.previewBass);
     
+}
+
+bool SynergyAudioProcessorEditor::tooltipsEnabled()
+{
+    return settingsCache.toolTips;
+}
+
+void SynergyAudioProcessorEditor::refreshMidi()
+{
+    viewport.setVisible(false);
+    audioProcessor.midiFile.clear();
+    midiFileDrop.midiLoaded = false;
+    midiFileDrop.repaint();
+    audioProcessor.midiSequence.clear();
 }

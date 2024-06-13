@@ -80,13 +80,21 @@ public:
     /// <param name="previewBass"></param>
     void setPreviewBass(int previewBass);
 
+    /// <summary>
+    /// Gets the BPM of a Midi File
+    /// </summary>
+    /// <param name="midiFile"></param>
+    /// <returns></returns>
+    double getMidiFileBPM();
+
     // variables
     float noteOnVel = 0;
     juce::MidiFile midiFile;
 
+    juce::MidiMessageSequence midiSequence;
+
 private:
     juce::Synthesiser synth;
-    juce::MidiMessageSequence midiSequence;
     double currentPosition = 0.0;
     juce::AudioFormatManager formatManager;
     double sampleRate = 48000;

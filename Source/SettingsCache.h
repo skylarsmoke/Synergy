@@ -11,4 +11,5 @@ struct SettingsCache
 	int defaultVariety;
 	int defaultNoteVelocity;
 	int previewBass;
+	bool toolTips;
 };

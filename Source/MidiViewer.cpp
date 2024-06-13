@@ -1,18 +1,9 @@
-/*
-  ==============================================================================
-
-    MidiViewer.cpp
-    Created: 29 May 2024 8:57:35pm
-    Author:  skyla
-
-  ==============================================================================
-*/
-
 #include <JuceHeader.h>
 #include "MidiViewer.h"
+#include "MidiDragOutput.h"
 
 //==============================================================================
-MidiViewer::MidiViewer(int numberOfOctaves) : numOctaves(numberOfOctaves), cellWidth(20), cellHeight(20)
+MidiViewer::MidiViewer(MidiDragOutput& md, int numberOfOctaves) : numOctaves(numberOfOctaves), cellWidth(20), cellHeight(20), midiDragOutput(&md)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -24,7 +15,7 @@ MidiViewer::~MidiViewer()
 {
 }
 
-void MidiViewer::paint (juce::Graphics& g)
+void MidiViewer::paint(juce::Graphics& g)
 {
     // Clear the background
     g.fillAll(juce::Colour(30, 30, 30));
@@ -60,8 +51,8 @@ void MidiViewer::paint (juce::Graphics& g)
     int gridHeight = pitchRange * cellHeight;
 
     // Draw horizontal rows with different colors for sharps/flats and naturals
-    juce::Colour naturalNoteColour = juce::Colour::fromRGB(40, 40, 40);
-    juce::Colour sharpFlatNoteColour = juce::Colour::fromRGB(30, 30, 30);
+    juce::Colour naturalNoteColour = juce::Colour::fromRGB(30, 30, 30);
+    juce::Colour sharpFlatNoteColour = juce::Colour::fromRGB(25, 25, 25);
     juce::StringArray sharpFlatNotes = { "C#", "D#", "F#", "G#", "A#" };
 
     for (int i = 0; i < pitchRange; ++i)
@@ -85,7 +76,7 @@ void MidiViewer::paint (juce::Graphics& g)
         g.fillRect(0, y, gridWidth, cellHeight);
     }
 
-    g.setColour(juce::Colour::fromRGB(20, 20, 20));
+    g.setColour(juce::Colour::fromRGB(40, 40, 40));
 
     // Draw vertical grid lines (for beats)
     for (int i = 0; i <= totalBars * beatsPerBar; ++i)
@@ -187,3 +178,12 @@ void MidiViewer::setMidiNotes(const std::vector<MidiNote>& notes)
     }
     repaint();
 }
+
+void MidiViewer::mouseEnter(const juce::MouseEvent& event)
+{
+    midiDragOutput->setVisible(true);
+}
+
+
+
+

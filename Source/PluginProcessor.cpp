@@ -270,7 +270,6 @@ void SynergyAudioProcessor::loadFile(const juce::String& path)
 void SynergyAudioProcessor::loadPreviewMidiFile(const juce::MidiMessageSequence midiSeq)
 {
     midiSequence = midiSeq;
-    //midiSequence.updateMatchedPairs();
 
     DBG("Loaded MIDI sequence with " << midiSequence.getNumEvents() << " events.");
 
@@ -285,6 +284,7 @@ void SynergyAudioProcessor::playAudio()
 {
     if (midiSequence.getNumEvents() > 0)
     {
+        bpm = getMidiFileBPM();
         isPlaying = true;
         currentPosition = 0;
         currentEventIndex = 0;
@@ -399,4 +399,28 @@ void SynergyAudioProcessor::setPreviewBass(int previewBass)
     default:
         std::cerr << "Unrecognized previewBass code!" << std::endl;
     }
+}
+
+// Function to get the tempo in BPM from a MIDI file
+double SynergyAudioProcessor::getMidiFileBPM()
+{
+    double bpm = 175.0; // Default tempo
+
+    for (int trackIndex = 0; trackIndex < midiFile.getNumTracks(); ++trackIndex)
+    {
+        const juce::MidiMessageSequence* track = midiFile.getTrack(trackIndex);
+
+        for (int eventIndex = 0; eventIndex < track->getNumEvents(); ++eventIndex)
+        {
+            const juce::MidiMessage& message = track->getEventPointer(eventIndex)->message;
+
+            if (message.isTempoMetaEvent())
+            {
+                bpm = message.getTempoSecondsPerQuarterNote() > 0 ? 60.0 / message.getTempoSecondsPerQuarterNote() : 120.0;
+                return bpm; // Assuming the first tempo event represents the BPM for the entire file
+            }
+        }
+    }
+
+    return bpm; // Return default or found BPM
 }

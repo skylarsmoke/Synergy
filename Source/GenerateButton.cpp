@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "GenerateButton.h"
+#include "MidiViewer.h"
 
 using namespace juce;
 
@@ -42,8 +43,8 @@ GenerateButton::GenerateButton(BassGenerator& bassAI,
     generateButton.setImages(true, true, true, generateButtonImage, 1.0f, {}, generateButtonImageHover, 1.0f, {}, generateButtonImage, 1.0f, {});
     generateButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
     generateButton.onClick = [this] { generate(); };
+    generateButton.setTooltip("Generates a bassline based off of the midi and parameters provided.");
     addAndMakeVisible(generateButton);
-
 
 }
 
@@ -68,7 +69,7 @@ bool GenerateButton::hitTest(int x, int y)
     return hitArea.contains(x, y);
 }
 
-void GenerateButton::createMidiFile(const std::vector<MidiNote>&notes, const juce::MidiFile & inputMidiFile, const juce::File & outputFile) {
+void GenerateButton::createMidiFile(const std::vector<MidiNote>&notes, const juce::MidiFile & inputMidiFile) {
     juce::MidiMessageSequence sequence;
     int tpq = 960; // Default to 960 TPQ
 
@@ -92,39 +93,32 @@ void GenerateButton::createMidiFile(const std::vector<MidiNote>&notes, const juc
         sequence.addEvent(juce::MidiMessage::noteOff(1, note.pitch), tick + duration);
     }
 
-    juce::MidiFile outputMidiFile;
     outputMidiFile.setTicksPerQuarterNote(tpq);
 
     outputMidiFile.addTrack(sequence);
     audioProcessor.loadPreviewMidiFile(sequence);
+}
 
-    juce::FileOutputStream outputStream(outputFile);
-    if (!outputStream.openedOk()) {
-        std::cerr << "Failed to open output file stream." << std::endl;
-        return;
-    }
-
-    outputMidiFile.writeTo(outputStream);
+bool isMidiFileValid(const juce::MidiFile& midiFile)
+{
+    // Check if the MIDI file has tracks and a valid time format
+    return midiFile.getTimeFormat() != 0 && midiFile.getNumTracks() > 0;
 }
 
 void GenerateButton::generate()
 {
     //bassGenerator->trainFromFolder("C:\\Users\\skyla\\OneDrive\\Desktop\\Unison Essential MIDI Basslines");
     
-    juce::File midiFile("C:\\Users\\skyla\\OneDrive\\Desktop\\Unison Essential MIDI Basslines\\DHR_125_bass_my_house_Dmin.mid");
-    juce::FileInputStream inputStream(midiFile);
-    juce::MidiFile juceMidiFile;
-    juceMidiFile.readFrom(inputStream);
+    if (!isMidiFileValid(audioProcessor.midiFile)) return; // if the file is not valid, we do not generate
+    outputMidiFile.clear();
 
     int basslineLoopLength = setBasslineLoop();
     
-    auto test = bassGenerator->generateBassline(juceMidiFile, stemType->getText(), musicalKey->getText().toStdString(), (int)varietySlider->getValue(), basslineLoopLength);
+    auto newBassline = bassGenerator->generateBassline(audioProcessor.midiFile, stemType->getText(), musicalKey->getText().toStdString(), (int)varietySlider->getValue(), basslineLoopLength);
 
-    juce::File outputMidiFilePath("C:\\Users\\skyla\\OneDrive\\Desktop\\test.mid");
+    createMidiFile(newBassline, audioProcessor.midiFile);
 
-    createMidiFile(test, juceMidiFile, outputMidiFilePath);
-
-    midiViewer->setMidiNotes(test);
+    midiViewer->setMidiNotes(newBassline);
     viewport->setVisible(true);
 
 }
@@ -143,6 +137,9 @@ int GenerateButton::setBasslineLoop()
         std::cerr << "Bassline loop value not recognized";
     }
 }
+
+
+
 
 
 

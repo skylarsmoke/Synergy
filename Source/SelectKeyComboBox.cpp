@@ -46,6 +46,7 @@ SelectKeyComboBox::SelectKeyComboBox()
     selectKeyCombo.setSelectedId(5);
     selectKeyCombo.setComponentID("Key");
     selectKeyCombo.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    selectKeyCombo.setTooltip("The musical key you want the bassline in.");
     addAndMakeVisible(selectKeyCombo);
 }
 

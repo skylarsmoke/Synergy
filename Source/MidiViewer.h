@@ -13,6 +13,9 @@
 #include <JuceHeader.h>
 #include "MidiNote.h"
 
+// Forward declaration
+class MidiDragOutput;
+
 //==============================================================================
 /*
 */
@@ -20,7 +23,7 @@ class MidiViewer  : public juce::Component
 {
 public:
 
-    MidiViewer(int numberOfOctaves = 10);
+    MidiViewer(MidiDragOutput& md, int numberOfOctaves = 10);
     ~MidiViewer() override;
 
     void paint (juce::Graphics&) override;
@@ -28,6 +31,8 @@ public:
 
     void setMidiNotes(const std::vector<MidiNote>& notes);
 
+
+    void mouseEnter(const juce::MouseEvent& event) override;
 
 
 private:
@@ -38,6 +43,10 @@ private:
     int cellHeight;
 
     juce::StringArray noteNames;
+    MidiDragOutput* midiDragOutput;
+
+    bool isMidiDragOutputVisible = false;
+
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiViewer)
