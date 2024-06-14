@@ -30,8 +30,8 @@ void MidiDragOutput::paint (juce::Graphics& g)
 {
     
 
-    g.setColour(juce::Colour(50, 50, 50).withAlpha(0.4f)); // Set the colour with transparency
-    g.fillRoundedRectangle(240, 45, 215, 100, 2.0f);
+    g.setColour(juce::Colour(100, 100, 100).withAlpha(0.1f)); // Set the colour with transparency
+    g.fillRoundedRectangle(245, 45, 205, 100, 2.0f);
 
     g.setOpacity(1.0f);
     g.drawImageWithin(juce::ImageCache::getFromMemory(BinaryData::MidiIcon_png, BinaryData::MidiIcon_pngSize), 320, 60, 50, 50, juce::RectanglePlacement::centred);
@@ -57,10 +57,21 @@ void MidiDragOutput::mouseDown(const juce::MouseEvent& event)
     tempFile.create();
     juce::FileOutputStream outputStream(tempFile);
 
-    if (generateButton->outputMidiFile.writeTo(outputStream))
+    if (outputStream.openedOk())
     {
-        // Start the drag-and-drop operation
-        startDragging(tempFile.getFullPathName(), this);
+        if (generateButton->outputMidiFile.writeTo(outputStream))
+        {
+            // Start the drag-and-drop operation
+            performExternalDragDropOfFiles(tempFile.getFullPathName(), true);
+        }
+        else
+        {
+            DBG("Failed to write MIDI data to the temporary file.");
+        }
+    }
+    else
+    {
+        DBG("Failed to create the temporary file for dragging.");
     }
 }
 

@@ -103,7 +103,7 @@ SettingsInfo::SettingsInfo(SettingsCache* sc, SynergyAudioProcessor* p) : settin
     addAndMakeVisible(defaultVarietyTextEditor);
 
     // default velocity
-    defaultVelocityLabel.setText("Default Velocity: ", NotificationType::dontSendNotification);
+    defaultVelocityLabel.setText("Default Density: ", NotificationType::dontSendNotification);
     defaultVelocityLabel.setFont(16.0f);
     addAndMakeVisible(defaultVelocityLabel);
 

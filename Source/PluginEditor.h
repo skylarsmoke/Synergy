@@ -17,6 +17,7 @@
 #include "BassGenerator.h"
 #include "GenSplash.h"
 #include "SettingsCache.h"
+#include "MidiDragOutput.h"
 
 //==============================================================================
 /**
@@ -31,6 +32,10 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
     
+    /// <summary>
+    /// Returns whether or not tooltips are enabled
+    /// </summary>
+    bool tooltipsEnabled();
 
 private:
     SynergyLookAndFeel synergyLookAndFeel;
@@ -38,12 +43,10 @@ private:
     GenerateButton generateButton;
     MidiViewer midiViewer;
     BassGenerator bassAI;
+    MidiDragOutput midiDragOutput;
 
     std::unique_ptr<MidiViewer> midiGrid;
     juce::Viewport viewport;
-    
-    // uncomment to enable tool tips
-    //TooltipWindow tooltips;
 
     // plugin activation
     ProductLockScreen productLockScreen;
@@ -81,7 +84,7 @@ private:
     // record panel
     juce::ImageButton settingsButton;
     juce::ImageButton previewButton;
-    juce::ImageButton recordButton;
+    juce::ImageButton refreshButton;
 
     // sliders
     juce::Slider noteVelocitySlider;
@@ -96,6 +99,8 @@ private:
 
     // settings cache
     SettingsCache settingsCache;
+
+    TooltipWindow tooltipWindow;
 
     /// <summary>
     /// Opens the settings window
@@ -178,6 +183,11 @@ private:
     /// Loads saved settings
     /// </summary>
     void loadSettings();
+
+    /// <summary>
+    /// Refreshes the midi generator
+    /// </summary>
+    void refreshMidi();
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SynergyAudioProcessorEditor)

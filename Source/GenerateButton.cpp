@@ -22,7 +22,8 @@ GenerateButton::GenerateButton(BassGenerator& bassAI,
                                Viewport& viewP, 
                                Slider& varietySliderV,
                                SynergyAudioProcessor& p,
-                               SettingsCache& sc) :
+                               SettingsCache& sc,
+                               Slider& noteV) :
     bassGenerator(&bassAI), 
     midiViewer(&midiV), 
     stemType(&stemT), 
@@ -30,7 +31,8 @@ GenerateButton::GenerateButton(BassGenerator& bassAI,
     viewport(&viewP), 
     varietySlider(&varietySliderV),
     audioProcessor(p),
-    settingsCache(&sc)
+    settingsCache(&sc),
+    velocitySlider(&noteV)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -109,14 +111,16 @@ void GenerateButton::generate()
 {
     //bassGenerator->trainFromFolder("C:\\Users\\skyla\\OneDrive\\Desktop\\Unison Essential MIDI Basslines");
     
-    if (!isMidiFileValid(audioProcessor.midiFile)) return; // if the file is not valid, we do not generate
+    if (!isMidiFileValid(audioProcessor.midiFile) && stemType->getText() != "None") return; // if the file is not valid, we do not generate
     outputMidiFile.clear();
 
     int basslineLoopLength = setBasslineLoop();
     
-    auto newBassline = bassGenerator->generateBassline(audioProcessor.midiFile, stemType->getText(), musicalKey->getText().toStdString(), (int)varietySlider->getValue(), basslineLoopLength);
+    auto newBassline = bassGenerator->generateBassline(audioProcessor.midiFile, stemType->getText(), musicalKey->getText().toStdString(), (int)varietySlider->getValue(), basslineLoopLength, (int)velocitySlider->getValue());
 
     createMidiFile(newBassline, audioProcessor.midiFile);
+
+    if (newBassline.empty()) return;
 
     midiViewer->setMidiNotes(newBassline);
     viewport->setVisible(true);

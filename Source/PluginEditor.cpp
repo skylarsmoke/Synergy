@@ -29,7 +29,7 @@ void SynergyAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
 //==============================================================================
 SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor& p)
     : AudioProcessorEditor (&p), midiFileDrop (p, messageBox), audioProcessor (p), startTime (Time::getMillisecondCounterHiRes() * 0.001),
-    productLockScreen(&productUnlockStatus, messageBox), generateButton(bassAI, midiViewer, stemTypeCombo.stemTypeCombo, selectKeyCombo.selectKeyCombo, viewport, varietySlider, p, settingsCache), 
+    productLockScreen(&productUnlockStatus, messageBox), generateButton(bassAI, midiViewer, stemTypeCombo.stemTypeCombo, selectKeyCombo.selectKeyCombo, viewport, varietySlider, p, settingsCache, noteVelocitySlider), 
     synergyLookAndFeel(&settingsCache), midiDragOutput(generateButton), midiViewer(midiDragOutput, 10)
 {
 
@@ -66,7 +66,7 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     noteVelocityValue.setText((juce::String)noteVelocitySlider.getValue(), juce::NotificationType::dontSendNotification);
     noteVelocityValue.setColour(juce::Label::textColourId, theme->mainSliderColor);
     noteVelocityValue.setJustificationType(Justification::centred);
-    noteVelocityValue.setTooltip("Sets the velocity of each note in the generated bassline.");
+    noteVelocityValue.setTooltip("Determines how many notes should be in the bassline.");
     addAndMakeVisible(noteVelocityValue);
 
     // variety slider

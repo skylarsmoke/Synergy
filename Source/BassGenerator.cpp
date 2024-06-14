@@ -99,7 +99,7 @@ void BassGenerator::trainFromFolder(const String& folderPath)
     }
 
     // TODO: Delete this before making production version
-    //saveData("C:\\Users\\skyla\\OneDrive\\Desktop\\synergyBassData.json");
+    saveData("C:\\Users\\skyla\\OneDrive\\Desktop\\synergyBassData.json");
 }
 
 void BassGenerator::train(const MidiFile& midiFile)
@@ -159,7 +159,8 @@ std::vector<MidiNote> BassGenerator::generateBassline(const MidiFile& inputMidiF
                                                       const String& stemType, 
                                                       const std::string& inputMusicalKey,
                                                       int noteVariety,
-                                                      int loopLength)
+                                                      int loopLength,
+                                                      int noteVelocity)
 {
     std::vector<MidiNote> newBassline;
 
@@ -174,7 +175,7 @@ std::vector<MidiNote> BassGenerator::generateBassline(const MidiFile& inputMidiF
         std::vector<MidiNote> melodyNotes = extractMidiNotes(inputMidiFile);
 
         // then we generate a bassline from the melody notes
-        newBassline = generateBasslineFromMelody(melodyNotes, noteVariety, loopLength);
+        newBassline = generateBasslineFromMelody(melodyNotes, noteVariety, loopLength, noteVelocity);
     }
     else if (stemType == "Chords")
     {
@@ -182,7 +183,7 @@ std::vector<MidiNote> BassGenerator::generateBassline(const MidiFile& inputMidiF
         std::vector<MidiNote> chordNotes = extractMidiNotes(inputMidiFile);
 
         // then we generate a bassline from the chord notes
-        newBassline = generateBasslineFromChords(chordNotes, noteVariety, loopLength);
+        newBassline = generateBasslineFromChords(chordNotes, noteVariety, loopLength, noteVelocity);
     }
     else if (stemType == "Drums")
     {
@@ -190,7 +191,11 @@ std::vector<MidiNote> BassGenerator::generateBassline(const MidiFile& inputMidiF
         std::vector<MidiNote> drumNotes = extractMidiNotes(inputMidiFile);
 
         // then we generate a bassline from the drum notes
-        newBassline = generateBasslineFromDrums(drumNotes, noteVariety, loopLength);
+        newBassline = generateBasslineFromDrums(drumNotes, noteVariety, loopLength, noteVelocity);
+    }
+    else if (stemType == "None")
+    {
+        newBassline = generateBasslineNoMidi(noteVariety, loopLength, noteVelocity);
     }
 
    
@@ -200,7 +205,8 @@ std::vector<MidiNote> BassGenerator::generateBassline(const MidiFile& inputMidiF
 
 std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vector<MidiNote>& melodyNotes,
                                                                 int noteVariety,
-                                                                int loopLength)
+                                                                int loopLength,
+                                                                int noteVelocity)
 {
     std::vector<MidiNote> basslineNotes;
     std::vector<MidiNote> loopedBassline;
@@ -213,7 +219,10 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
 
     // Use the first note's pitch as the reference
     int referencePitch = melodyNotes[0].pitch;
-    int referenceOctave = referencePitch / 12;
+
+    // Ensure a minimum density of notes
+    int minDensity = 30; // Ensures there's always at least some notes
+    int adjustedVelocity = std::max(noteVelocity, minDensity);
 
     while (totalBeats < maxBeats)
     {
@@ -227,6 +236,14 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
                 basslineNotes.push_back(loopedNote);
             }
             totalBeats += loopBeats;
+            continue;
+        }
+
+        // Determine if a note should be added based on adjustedVelocity
+        int addNoteProbability = std::rand() % 100;
+        if (addNoteProbability >= adjustedVelocity)
+        {
+            totalBeats += barLength / 4; // Skip a quarter of a bar before next decision
             continue;
         }
 
@@ -245,17 +262,17 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
             bassPitch = getNextNoteFromChain(melodyNote.pitch).pitch;
         }
 
-        // Constrain the pitch to within one octave of the reference pitch
-        while (bassPitch < referencePitch - 12) bassPitch += 12;
-        while (bassPitch > referencePitch + 12) bassPitch -= 12;
+        // Constrain the pitch to within the 1st, 2nd, and 3rd octaves
+        while (bassPitch < 12) bassPitch += 12;  // Minimum pitch is C1
+        while (bassPitch >= 48) bassPitch -= 12; // Maximum pitch is B3
 
-        bassPitch = std::max(0, std::min(127, bassPitch));
+        bassPitch = std::max(12, std::min(47, bassPitch));
 
         // Ensure the pitch is within one octave of the reference note
         int bassOctave = bassPitch / 12;
-        if (bassOctave != referenceOctave)
+        if (bassOctave < 1 || bassOctave > 3)
         {
-            bassPitch = (bassPitch % 12) + (referenceOctave * 12);
+            bassPitch = (bassPitch % 12) + (referencePitch % 12) + 12; // Adjust within 1st, 2nd, and 3rd octaves
         }
 
         // Randomize the note length between a quarter note (1 beat) and a whole note (4 beats)
@@ -271,9 +288,9 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
         while (!isNoteInScale(bassPitch) && attempts < maxAttempts)
         {
             bassPitch = std::rand() % 128;
-            // Constrain the pitch to within one octave of the reference pitch
-            while (bassPitch < referencePitch - 12) bassPitch += 12;
-            while (bassPitch > referencePitch + 12) bassPitch -= 12;
+            // Constrain the pitch to within the 1st, 2nd, and 3rd octaves
+            while (bassPitch < 12) bassPitch += 12;
+            while (bassPitch >= 48) bassPitch -= 12;
             attempts++;
         }
 
@@ -287,9 +304,9 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
         {
             // If no valid note was found, use the closest note in the scale
             bassPitch = scales[musicalKey][std::rand() % scales[musicalKey].size()];
-            // Constrain the pitch to within one octave of the reference pitch
-            while (bassPitch < referencePitch - 12) bassPitch += 12;
-            while (bassPitch > referencePitch + 12) bassPitch -= 12;
+            // Constrain the pitch to within the 1st, 2nd, and 3rd octaves
+            while (bassPitch < 12) bassPitch += 12;
+            while (bassPitch >= 48) bassPitch -= 12;
             MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
             basslineNotes.push_back(newNote);
             loopedBassline.push_back(newNote);
@@ -300,11 +317,13 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
 
     return basslineNotes;
 
+
 }
 
 std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vector<MidiNote>& chordNotes,
                                                                 int noteVariety,
-                                                                int loopLength)
+                                                                int loopLength,
+                                                                int noteVelocity)
 {
     std::vector<MidiNote> basslineNotes;
     std::vector<MidiNote> loopedBassline;
@@ -324,7 +343,10 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
 
     // Use the first chord's root note as the reference
     int referencePitch = chordNotes[0].pitch;
-    int referenceOctave = referencePitch / 12;
+
+    // Ensure a minimum density of notes
+    int minDensity = 30; // Ensures there's always at least some notes
+    int adjustedVelocity = std::max(noteVelocity, minDensity);
 
     while (totalBeats < maxBeats)
     {
@@ -338,6 +360,14 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
                 basslineNotes.push_back(loopedNote);
             }
             totalBeats += loopBeats;
+            continue;
+        }
+
+        // Determine if a note should be added based on adjustedVelocity
+        int addNoteProbability = std::rand() % 100;
+        if (addNoteProbability >= adjustedVelocity)
+        {
+            totalBeats += barLength / 4; // Skip a quarter of a bar before next decision
             continue;
         }
 
@@ -363,17 +393,17 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
             bassPitch = getNextNoteFromChain(chordNote.pitch).pitch;
         }
 
-        // Constrain the pitch to within one octave of the reference pitch
-        while (bassPitch < referencePitch - 12) bassPitch += 12;
-        while (bassPitch > referencePitch + 12) bassPitch -= 12;
+        // Constrain the pitch to within the 1st, 2nd, and 3rd octaves
+        while (bassPitch < 12) bassPitch += 12;  // Minimum pitch is C1
+        while (bassPitch >= 48) bassPitch -= 12; // Maximum pitch is B3
 
-        bassPitch = std::max(0, std::min(127, bassPitch));
+        bassPitch = std::max(12, std::min(47, bassPitch));
 
         // Ensure the pitch is within one octave of the reference note
         int bassOctave = bassPitch / 12;
-        if (bassOctave != referenceOctave)
+        if (bassOctave < 1 || bassOctave > 3)
         {
-            bassPitch = (bassPitch % 12) + (referenceOctave * 12);
+            bassPitch = (bassPitch % 12) + (referencePitch % 12) + 12; // Adjust within 1st, 2nd, and 3rd octaves
         }
 
         // Randomize the note length between a quarter note (1 beat) and a whole note (4 beats)
@@ -389,9 +419,9 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
         while (!isNoteInScale(bassPitch) && attempts < maxAttempts)
         {
             bassPitch = std::rand() % 128;
-            // Constrain the pitch to within one octave of the reference pitch
-            while (bassPitch < referencePitch - 12) bassPitch += 12;
-            while (bassPitch > referencePitch + 12) bassPitch -= 12;
+            // Constrain the pitch to within the 1st, 2nd, and 3rd octaves
+            while (bassPitch < 12) bassPitch += 12;
+            while (bassPitch >= 48) bassPitch -= 12;
             attempts++;
         }
 
@@ -405,9 +435,9 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
         {
             // If no valid note was found, use the closest note in the scale
             bassPitch = scales[musicalKey][std::rand() % scales[musicalKey].size()];
-            // Constrain the pitch to within one octave of the reference pitch
-            while (bassPitch < referencePitch - 12) bassPitch += 12;
-            while (bassPitch > referencePitch + 12) bassPitch -= 12;
+            // Constrain the pitch to within the 1st, 2nd, and 3rd octaves
+            while (bassPitch < 12) bassPitch += 12;
+            while (bassPitch >= 48) bassPitch -= 12;
             MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
             basslineNotes.push_back(newNote);
             loopedBassline.push_back(newNote);
@@ -416,12 +446,14 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
         totalBeats += noteLength;
     }
 
+
     return basslineNotes;
 }
 
 std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector<MidiNote>& drumNotes,
                                                                int noteVariety,
-                                                               int loopLength)
+                                                               int loopLength,
+                                                               int noteVelocity)
 {
     std::vector<MidiNote> basslineNotes;
     std::vector<MidiNote> loopedBassline;
@@ -454,6 +486,10 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
     // Use the first kick note's startBeat as the reference
     float referenceBeat = kickNotes[0].startBeat;
 
+    // Ensure a minimum density of notes
+    int minDensity = 30; // Ensures there's always at least some notes
+    int adjustedVelocity = std::max(noteVelocity, minDensity);
+
     while (totalBeats < maxBeats)
     {
         // If we're at the start of a loop, and we have a saved loop, append the saved loop
@@ -466,6 +502,14 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
                 basslineNotes.push_back(loopedNote);
             }
             totalBeats += loopBeats;
+            continue;
+        }
+
+        // Determine if a note should be added based on adjustedVelocity
+        int addNoteProbability = std::rand() % 100;
+        if (addNoteProbability >= adjustedVelocity)
+        {
+            totalBeats += barLength / 4; // Skip a quarter of a bar before next decision
             continue;
         }
 
@@ -487,12 +531,11 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
         // Generate a bass note based on the beat marker
         int bassPitch = getNextNoteFromChain(static_cast<int>(referenceBeat)).pitch;
 
-        // Constrain the pitch to within one octave of a reference note (e.g., C2, MIDI note number 36)
-        int referencePitch = 36; // C2
-        while (bassPitch < referencePitch - 12) bassPitch += 12;
-        while (bassPitch > referencePitch + 12) bassPitch -= 12;
+        // Constrain the pitch to within the 1st, 2nd, and 3rd octaves
+        while (bassPitch < 12) bassPitch += 12;  // Minimum pitch is C1
+        while (bassPitch >= 48) bassPitch -= 12; // Maximum pitch is B3
 
-        bassPitch = std::max(0, std::min(127, bassPitch));
+        bassPitch = std::max(12, std::min(47, bassPitch));
 
         // Randomize the note length between a quarter note (1 beat) and a whole note (4 beats)
         float noteLength = (std::rand() % 4 + 1) * 1.0f;
@@ -507,9 +550,9 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
         while (!isNoteInScale(bassPitch) && attempts < maxAttempts)
         {
             bassPitch = std::rand() % 128;
-            // Constrain the pitch to within one octave of the reference pitch
-            while (bassPitch < referencePitch - 12) bassPitch += 12;
-            while (bassPitch > referencePitch + 12) bassPitch -= 12;
+            // Constrain the pitch to within the 1st, 2nd, and 3rd octaves
+            while (bassPitch < 12) bassPitch += 12;
+            while (bassPitch >= 48) bassPitch -= 12;
             attempts++;
         }
 
@@ -523,9 +566,110 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
         {
             // If no valid note was found, use the closest note in the scale
             bassPitch = scales[musicalKey][std::rand() % scales[musicalKey].size()];
-            // Constrain the pitch to within one octave of the reference pitch
-            while (bassPitch < referencePitch - 12) bassPitch += 12;
-            while (bassPitch > referencePitch + 12) bassPitch -= 12;
+            // Constrain the pitch to within the 1st, 2nd, and 3rd octaves
+            while (bassPitch < 12) bassPitch += 12;
+            while (bassPitch >= 48) bassPitch -= 12;
+            MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
+            basslineNotes.push_back(newNote);
+            loopedBassline.push_back(newNote);
+        }
+
+        totalBeats += noteLength;
+    }
+
+    return basslineNotes;
+}
+
+std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety,
+                                                            int loopLength,
+                                                            int noteVelocity)
+{
+    std::vector<MidiNote> basslineNotes;
+    std::vector<MidiNote> loopedBassline;
+    float totalBeats = 0.0f;
+    float barLength = 4.0f; // Assuming 4 beats per bar
+    float maxBeats = 8 * barLength; // 8 bars
+    float loopBeats = loopLength * barLength; // Length of the loop in beats
+
+    // Ensure a minimum density of notes
+    int minDensity = 30; // Ensures there's always at least some notes
+    int adjustedVelocity = std::max(noteVelocity, minDensity);
+
+    // Randomly select a starting note in the scale within the 3rd and 4th octaves
+    int startingPitch = scales[musicalKey][std::rand() % scales[musicalKey].size()] + 36; // Minimum pitch is C3 (36)
+    while (startingPitch >= 60) startingPitch -= 12; // Maximum pitch is B4 (59)
+    int referencePitch = startingPitch;
+
+    while (totalBeats < maxBeats)
+    {
+        // If we're at the start of a loop, and we have a saved loop, append the saved loop
+        if (totalBeats > 0 && static_cast<int>(totalBeats) % static_cast<int>(loopBeats) == 0 && !loopedBassline.empty())
+        {
+            for (const auto& note : loopedBassline)
+            {
+                MidiNote loopedNote = note;
+                loopedNote.startBeat += totalBeats;
+                basslineNotes.push_back(loopedNote);
+            }
+            totalBeats += loopBeats;
+            continue;
+        }
+
+        // Determine if a note should be added based on adjustedVelocity
+        int addNoteProbability = std::rand() % 100;
+        if (addNoteProbability >= adjustedVelocity)
+        {
+            totalBeats += barLength / 4; // Skip a quarter of a bar before next decision
+            continue;
+        }
+
+        // Generate a new note based on noteVariety
+        int bassPitch;
+        bassPitch = getNextNoteFromChain(referencePitch).pitch;
+
+        // Constrain the pitch to within the 3rd and 4th octaves
+        while (bassPitch < 36) bassPitch += 12;  // Minimum pitch is C3 (36)
+        while (bassPitch >= 60) bassPitch -= 12; // Maximum pitch is B4 (59)
+
+        bassPitch = std::max(36, std::min(59, bassPitch));
+
+        // Ensure the pitch is within the 3rd and 4th octaves
+        int bassOctave = bassPitch / 12;
+        if (bassOctave < 3 || bassOctave > 4)
+        {
+            bassPitch = (bassPitch % 12) + (referencePitch % 12) + 36; // Adjust within 3rd and 4th octaves
+        }
+
+        // Randomize the note length between a quarter note (1 beat) and a whole note (4 beats)
+        float noteLength = (std::rand() % 4 + 1) * 1.0f;
+
+        // Ensure the note fits within the remaining beats
+        noteLength = std::min(noteLength, maxBeats - totalBeats);
+
+        // Limit the number of attempts to find a valid note to avoid infinite loops
+        int attempts = 0;
+        const int maxAttempts = 10;
+
+        while (!isNoteInScale(bassPitch) && attempts < maxAttempts)
+        {
+            bassPitch = std::rand() % 128;
+            // Constrain the pitch to within the 3rd and 4th octaves
+            while (bassPitch < 36) bassPitch += 12;  // Minimum pitch is C3 (36)
+            while (bassPitch >= 60) bassPitch -= 12; // Maximum pitch is B4 (59)
+            attempts++;
+        }
+
+        if (isNoteInScale(bassPitch))
+        {
+            MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
+            basslineNotes.push_back(newNote);
+            loopedBassline.push_back(newNote);
+        }
+        else
+        {
+            // If no valid note was found, use the closest note in the scale
+            bassPitch = scales[musicalKey][std::rand() % scales[musicalKey].size()] + 36; // Minimum pitch is C3 (36)
+            while (bassPitch >= 60) bassPitch -= 12; // Maximum pitch is B4 (59)
             MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
             basslineNotes.push_back(newNote);
             loopedBassline.push_back(newNote);

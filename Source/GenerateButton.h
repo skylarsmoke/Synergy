@@ -17,6 +17,7 @@
 #include "PluginProcessor.h"
 #include "SettingsCache.h"
 
+
 // Forward declaration
 class MidiViewer;
 
@@ -33,7 +34,8 @@ public:
                    Viewport& viewP, 
                    Slider& varietySliderV,
                    SynergyAudioProcessor&,
-                   SettingsCache&);
+                   SettingsCache&,
+                   Slider&);
 
     ~GenerateButton() override;
 
@@ -55,6 +57,7 @@ private:
     ComboBox* stemType;
     ComboBox* musicalKey;
     Slider* varietySlider;
+    Slider* velocitySlider;
     SynergyAudioProcessor& audioProcessor;
     SettingsCache* settingsCache;
 

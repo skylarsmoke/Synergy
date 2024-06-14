@@ -50,7 +50,8 @@ public:
                                            const String& stemType, 
                                            const std::string& inputMusicalKey, 
                                            int noteVariety,
-                                           int loopLength = 4);
+                                           int loopLength,
+                                           int noteVelocity);
 
     
 
@@ -80,7 +81,8 @@ private:
     /// <returns></returns>
     std::vector<MidiNote> generateBasslineFromMelody(const std::vector<MidiNote>& melodyNotes, 
                                                      int noteVariety,
-                                                     int loopLength);
+                                                     int loopLength,
+                                                     int noteVelocity);
 
     /// <summary>
     /// Generates a bassline from a given chord progression
@@ -89,14 +91,21 @@ private:
     /// <returns></returns>
     std::vector<MidiNote> generateBasslineFromChords(const std::vector<MidiNote>& chordNotes,
                                                      int noteVariety,
-                                                     int loopLength);
+                                                     int loopLength,
+                                                     int noteVelocity);
 
     /// <summary>
     /// Generates bassline from a given drum midi
     /// </summary>
     std::vector<MidiNote> generateBasslineFromDrums(const std::vector<MidiNote>& drumNotes,
                                                     int noteVariety,
-                                                    int loopLength);
+                                                    int loopLength,
+                                                    int noteVelocity);
+
+    
+    std::vector<MidiNote> generateBasslineNoMidi(int noteVariety,
+                                                 int loopLength,
+                                                 int noteVelocity);
 
     /// <summary>
     /// Gets the next note in the chain from the current note

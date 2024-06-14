@@ -18,12 +18,13 @@ StemTypeCombo::StemTypeCombo()
     // initialise any special settings that your component needs.
     setSize(200, 40);
     setLookAndFeel(&synergyLookAndFeel);
-    stemTypeCombo.setComponentID("StemType");    
-    stemTypeCombo.addItem("Drums", 1);
-    stemTypeCombo.addItem("Chords", 2);
-    stemTypeCombo.addItem("Melody", 3);
-    stemTypeCombo.setSelectedId(3);
-    stemTypeCombo.setTooltip("The type of midi you have uploaded.");
+    stemTypeCombo.setComponentID("StemType");   
+    stemTypeCombo.addItem("None", 1);
+    stemTypeCombo.addItem("Melody", 2);
+    stemTypeCombo.addItem("Chords", 3);
+    stemTypeCombo.addItem("Drums", 4);
+    stemTypeCombo.setSelectedId(1);
+    stemTypeCombo.setTooltip("The type of midi you have uploaded as a reference.");
     stemTypeCombo.setMouseCursor(juce::MouseCursor::PointingHandCursor);
 
     addAndMakeVisible(stemTypeCombo);
