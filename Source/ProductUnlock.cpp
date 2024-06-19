@@ -40,7 +40,7 @@ String ProductUnlock::getWebsiteName()
 
 URL ProductUnlock::getServerAuthenticationURL()
 {
-    return URL("http://localhost:8080");
+    return URL("https://synergybassserver-m7kdgwaz6q-uw.a.run.app");
 }
 
 RSAKey ProductUnlock::getPublicKey()

@@ -212,8 +212,8 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
     std::vector<MidiNote> loopedBassline;
     float totalBeats = 0.0f;
     float barLength = 4.0f; // Assuming 4 beats per bar
-    float maxBeats = 8 * barLength; // 8 bars
     float loopBeats = loopLength * barLength; // Length of the loop in beats
+    float maxBeats = 8 * barLength; // Maximum length is 8 bars
 
     if (melodyNotes.empty()) return basslineNotes;
 
@@ -224,21 +224,9 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
     int minDensity = 30; // Ensures there's always at least some notes
     int adjustedVelocity = std::max(noteVelocity, minDensity);
 
-    while (totalBeats < maxBeats)
+    // First pass: Generate the loop of specified length
+    while (totalBeats < loopBeats)
     {
-        // If we're at the start of a loop, and we have a saved loop, append the saved loop
-        if (totalBeats > 0 && static_cast<int>(totalBeats) % static_cast<int>(loopBeats) == 0 && !loopedBassline.empty())
-        {
-            for (const auto& note : loopedBassline)
-            {
-                MidiNote loopedNote = note;
-                loopedNote.startBeat += totalBeats;
-                basslineNotes.push_back(loopedNote);
-            }
-            totalBeats += loopBeats;
-            continue;
-        }
-
         // Determine if a note should be added based on adjustedVelocity
         int addNoteProbability = std::rand() % 100;
         if (addNoteProbability >= adjustedVelocity)
@@ -275,11 +263,21 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
             bassPitch = (bassPitch % 12) + (referencePitch % 12) + 12; // Adjust within 1st, 2nd, and 3rd octaves
         }
 
-        // Randomize the note length between a quarter note (1 beat) and a whole note (4 beats)
-        float noteLength = (std::rand() % 4 + 1) * 1.0f;
+        // Introduce a higher probability for shorter note lengths
+        float noteLength;
+        int lengthProbability = std::rand() % 100;
+        int randomOdds = std::rand() % 61 + 20;
+        if (lengthProbability < randomOdds) // 80% chance for faster notes
+        {
+            noteLength = (std::rand() % 2 + 1) * 0.5f; // Eighth or sixteenth notes
+        }
+        else
+        {
+            noteLength = (std::rand() % 4 + 1) * 1.0f; // Quarter to whole notes
+        }
 
         // Ensure the note fits within the remaining beats
-        noteLength = std::min(noteLength, maxBeats - totalBeats);
+        noteLength = std::min(noteLength, loopBeats - totalBeats);
 
         // Limit the number of attempts to find a valid note to avoid infinite loops
         int attempts = 0;
@@ -315,6 +313,20 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
         totalBeats += noteLength;
     }
 
+    // If the loop length is less than 8 bars, repeat the loop to fill up to 8 bars
+    if (loopLength < 8)
+    {
+        for (int i = 1; i < 8 / loopLength; ++i) // Repeat the loop
+        {
+            for (const auto& note : loopedBassline)
+            {
+                MidiNote loopedNote = note;
+                loopedNote.startBeat += i * loopBeats;
+                basslineNotes.push_back(loopedNote);
+            }
+        }
+    }
+
     return basslineNotes;
 
 
@@ -329,8 +341,8 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
     std::vector<MidiNote> loopedBassline;
     float totalBeats = 0.0f;
     float barLength = 4.0f; // Assuming 4 beats per bar
-    float maxBeats = 8 * barLength; // 8 bars
     float loopBeats = loopLength * barLength; // Length of the loop in beats
+    float maxBeats = 8 * barLength; // Maximum length is 8 bars
 
     if (chordNotes.empty()) return basslineNotes;
 
@@ -348,21 +360,9 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
     int minDensity = 30; // Ensures there's always at least some notes
     int adjustedVelocity = std::max(noteVelocity, minDensity);
 
-    while (totalBeats < maxBeats)
+    // First pass: Generate the loop of specified length
+    while (totalBeats < loopBeats)
     {
-        // If we're at the start of a loop, and we have a saved loop, append the saved loop
-        if (totalBeats > 0 && static_cast<int>(totalBeats) % static_cast<int>(loopBeats) == 0 && !loopedBassline.empty())
-        {
-            for (const auto& note : loopedBassline)
-            {
-                MidiNote loopedNote = note;
-                loopedNote.startBeat += totalBeats;
-                basslineNotes.push_back(loopedNote);
-            }
-            totalBeats += loopBeats;
-            continue;
-        }
-
         // Determine if a note should be added based on adjustedVelocity
         int addNoteProbability = std::rand() % 100;
         if (addNoteProbability >= adjustedVelocity)
@@ -406,11 +406,21 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
             bassPitch = (bassPitch % 12) + (referencePitch % 12) + 12; // Adjust within 1st, 2nd, and 3rd octaves
         }
 
-        // Randomize the note length between a quarter note (1 beat) and a whole note (4 beats)
-        float noteLength = (std::rand() % 4 + 1) * 1.0f;
+        // Introduce a higher probability for shorter note lengths
+        float noteLength;
+        int lengthProbability = std::rand() % 100;
+        int randomOdds = std::rand() % 61 + 20;
+        if (lengthProbability < randomOdds) // 80% chance for faster notes
+        {
+            noteLength = (std::rand() % 2 + 1) * 0.5f; // Eighth or sixteenth notes
+        }
+        else
+        {
+            noteLength = (std::rand() % 4 + 1) * 1.0f; // Quarter to whole notes
+        }
 
         // Ensure the note fits within the remaining beats
-        noteLength = std::min(noteLength, maxBeats - totalBeats);
+        noteLength = std::min(noteLength, loopBeats - totalBeats);
 
         // Limit the number of attempts to find a valid note to avoid infinite loops
         int attempts = 0;
@@ -446,6 +456,19 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
         totalBeats += noteLength;
     }
 
+    // If the loop length is less than 8 bars, repeat the loop to fill up to 8 bars
+    if (loopLength < 8)
+    {
+        for (int i = 1; i < 8 / loopLength; ++i) // Repeat the loop
+        {
+            for (const auto& note : loopedBassline)
+            {
+                MidiNote loopedNote = note;
+                loopedNote.startBeat += i * loopBeats;
+                basslineNotes.push_back(loopedNote);
+            }
+        }
+    }
 
     return basslineNotes;
 }
@@ -459,8 +482,8 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
     std::vector<MidiNote> loopedBassline;
     float totalBeats = 0.0f;
     float barLength = 4.0f; // Assuming 4 beats per bar
-    float maxBeats = 8 * barLength; // 8 bars
     float loopBeats = loopLength * barLength; // Length of the loop in beats
+    float maxBeats = 8 * barLength; // Maximum length is 8 bars
 
     if (drumNotes.empty()) return basslineNotes;
 
@@ -490,21 +513,9 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
     int minDensity = 30; // Ensures there's always at least some notes
     int adjustedVelocity = std::max(noteVelocity, minDensity);
 
-    while (totalBeats < maxBeats)
+    // First pass: Generate the loop of specified length
+    while (totalBeats < loopBeats)
     {
-        // If we're at the start of a loop, and we have a saved loop, append the saved loop
-        if (totalBeats > 0 && static_cast<int>(totalBeats) % static_cast<int>(loopBeats) == 0 && !loopedBassline.empty())
-        {
-            for (const auto& note : loopedBassline)
-            {
-                MidiNote loopedNote = note;
-                loopedNote.startBeat += loopBeats;
-                basslineNotes.push_back(loopedNote);
-            }
-            totalBeats += loopBeats;
-            continue;
-        }
-
         // Determine if a note should be added based on adjustedVelocity
         int addNoteProbability = std::rand() % 100;
         if (addNoteProbability >= adjustedVelocity)
@@ -537,11 +548,21 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
 
         bassPitch = std::max(12, std::min(47, bassPitch));
 
-        // Randomize the note length between a quarter note (1 beat) and a whole note (4 beats)
-        float noteLength = (std::rand() % 4 + 1) * 1.0f;
+        // Introduce a higher probability for shorter note lengths
+        float noteLength;
+        int lengthProbability = std::rand() % 100;
+        int randomOdds = std::rand() % 61 + 20;
+        if (lengthProbability < randomOdds) // 80% chance for faster notes
+        {
+            noteLength = (std::rand() % 2 + 1) * 0.5f; // Eighth or sixteenth notes
+        }
+        else
+        {
+            noteLength = (std::rand() % 4 + 1) * 1.0f; // Quarter to whole notes
+        }
 
         // Ensure the note fits within the remaining beats
-        noteLength = std::min(noteLength, loopBeats - currentBeat);
+        noteLength = std::min(noteLength, loopBeats - totalBeats);
 
         // Limit the number of attempts to find a valid note to avoid infinite loops
         int attempts = 0;
@@ -577,6 +598,20 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
         totalBeats += noteLength;
     }
 
+    // If the loop length is less than 8 bars, repeat the loop to fill up to 8 bars
+    if (loopLength < 8)
+    {
+        for (int i = 1; i < 8 / loopLength; ++i) // Repeat the loop
+        {
+            for (const auto& note : loopedBassline)
+            {
+                MidiNote loopedNote = note;
+                loopedNote.startBeat += i * loopBeats;
+                basslineNotes.push_back(loopedNote);
+            }
+        }
+    }
+
     return basslineNotes;
 }
 
@@ -588,8 +623,8 @@ std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety,
     std::vector<MidiNote> loopedBassline;
     float totalBeats = 0.0f;
     float barLength = 4.0f; // Assuming 4 beats per bar
-    float maxBeats = 8 * barLength; // 8 bars
     float loopBeats = loopLength * barLength; // Length of the loop in beats
+    float maxBeats = 8 * barLength; // Maximum length is 8 bars
 
     // Ensure a minimum density of notes
     int minDensity = 30; // Ensures there's always at least some notes
@@ -600,21 +635,9 @@ std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety,
     while (startingPitch >= 60) startingPitch -= 12; // Maximum pitch is B4 (59)
     int referencePitch = startingPitch;
 
-    while (totalBeats < maxBeats)
+    // First pass: Generate the loop of specified length
+    while (totalBeats < loopBeats)
     {
-        // If we're at the start of a loop, and we have a saved loop, append the saved loop
-        if (totalBeats > 0 && static_cast<int>(totalBeats) % static_cast<int>(loopBeats) == 0 && !loopedBassline.empty())
-        {
-            for (const auto& note : loopedBassline)
-            {
-                MidiNote loopedNote = note;
-                loopedNote.startBeat += totalBeats;
-                basslineNotes.push_back(loopedNote);
-            }
-            totalBeats += loopBeats;
-            continue;
-        }
-
         // Determine if a note should be added based on adjustedVelocity
         int addNoteProbability = std::rand() % 100;
         if (addNoteProbability >= adjustedVelocity)
@@ -640,11 +663,21 @@ std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety,
             bassPitch = (bassPitch % 12) + (referencePitch % 12) + 36; // Adjust within 3rd and 4th octaves
         }
 
-        // Randomize the note length between a quarter note (1 beat) and a whole note (4 beats)
-        float noteLength = (std::rand() % 4 + 1) * 1.0f;
+        // Introduce a higher probability for shorter note lengths
+        float noteLength;
+        int lengthProbability = std::rand() % 100;
+        int randomOdds = std::rand() % 61 + 20;
+        if (lengthProbability < randomOdds) // 80% chance for faster notes
+        {
+            noteLength = (std::rand() % 2 + 1) * 0.5f; // Eighth or sixteenth notes
+        }
+        else
+        {
+            noteLength = (std::rand() % 4 + 1) * 1.0f; // Quarter to whole notes
+        }
 
         // Ensure the note fits within the remaining beats
-        noteLength = std::min(noteLength, maxBeats - totalBeats);
+        noteLength = std::min(noteLength, loopBeats - totalBeats);
 
         // Limit the number of attempts to find a valid note to avoid infinite loops
         int attempts = 0;
@@ -676,6 +709,20 @@ std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety,
         }
 
         totalBeats += noteLength;
+    }
+
+    // If the loop length is less than 8 bars, repeat the loop to fill up to 8 bars
+    if (loopLength < 8)
+    {
+        for (int i = 1; i < 8 / loopLength; ++i) // Repeat the loop
+        {
+            for (const auto& note : loopedBassline)
+            {
+                MidiNote loopedNote = note;
+                loopedNote.startBeat += i * loopBeats;
+                basslineNotes.push_back(loopedNote);
+            }
+        }
     }
 
     return basslineNotes;

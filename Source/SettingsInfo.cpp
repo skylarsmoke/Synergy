@@ -68,7 +68,7 @@ SettingsInfo::SettingsInfo(SettingsCache* sc, SynergyAudioProcessor* p) : settin
     // report a bug link
     reportABugButton.setButtonText("Report a bug.");
     reportABugButton.setColour(HyperlinkButton::textColourId, Colour(60, 60, 60));
-    reportABugButton.setURL((URL)"https://www.google.com");
+    reportABugButton.setURL((URL)"https://www.rumoraudio.com/pages/contact");
     addAndMakeVisible(reportABugButton);
 
     // bassline loop setting

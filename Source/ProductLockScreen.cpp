@@ -52,7 +52,7 @@ ProductLockScreen::ProductLockScreen(ProductUnlock* status, TextEditor& messageB
     // having trouble link
     havingTroubleActivatingLink.setButtonText("Having trouble?");
     havingTroubleActivatingLink.setColour(HyperlinkButton::textColourId, Colour(60, 60, 60));
-    havingTroubleActivatingLink.setURL(URL("https://google.com"));
+    havingTroubleActivatingLink.setURL(URL("https://www.rumoraudio.com/pages/contact"));
     addAndMakeVisible(havingTroubleActivatingLink);
 
     // activation status label

@@ -131,7 +131,7 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     betaFont.setHeight(18.0f);
     betaFont.setBold(true);
     betaLabel.setFont(betaFont);
-    if (!developmentMode) addAndMakeVisible(betaLabel);
+    //if (!developmentMode) addAndMakeVisible(betaLabel);
 
     // stem type combo box
     addAndMakeVisible(stemTypeCombo);
@@ -184,10 +184,9 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     */
 
     // product authentication
-    //addAndMakeVisible(productLockScreen);
     //addChildComponent(productLockScreen);
 
-    // product reactivation
+    //// product reactivation
     //productLockScreen.reactivate();
 
     //showUnlockForm();
