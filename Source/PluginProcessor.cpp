@@ -19,7 +19,10 @@ SynergyAudioProcessor::SynergyAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
+    parameters(*this, nullptr, "PARAMETERS",
+               { std::make_unique<juce::AudioParameterFloat>("variety", "Variety", 0.0f, 1.0f, 0.5f),
+                 std::make_unique<juce::AudioParameterFloat>("param2", "Parameter 2", 0.0f, 1.0f, 0.5f) })
 #endif
 {
     formatManager.registerBasicFormats();
@@ -187,7 +190,25 @@ void SynergyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
 
     buffer.clear();
 
-    if (isPlaying)
+    // Get current playhead position and transport state
+    if (auto* playHead = getPlayHead())
+    {
+        juce::AudioPlayHead::CurrentPositionInfo positionInfo;
+        if (playHead->getCurrentPosition(positionInfo))
+        {
+            isPlaying = positionInfo.isPlaying;
+            bpm = positionInfo.bpm;
+            // If the transport has just started playing, reset the current position and event index
+            if (positionInfo.isPlaying && !wasPlaying)
+            {
+                currentPosition = 0.0;
+                currentEventIndex = 0;
+            }
+            wasPlaying = positionInfo.isPlaying;
+        }
+    }
+
+    if (isPlaying || isPreviewing)
     {
 
         const double ticksPerQuarterNote = ppq;
@@ -196,11 +217,16 @@ void SynergyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
         const double samplesPerTick = samplesPerQuarterNote / ticksPerQuarterNote;
 
         const int numSamples = buffer.getNumSamples();
+        const double loopLengthInQuarters = 8 * 4; // 8 bars
+        const double loopLengthInSamples = samplesPerQuarterNote * loopLengthInQuarters;
 
         for (int sample = 0; sample < numSamples; ++sample)
         {
+            // Calculate the current position within the loop
+            double loopPosition = fmod(currentPosition + (sample / samplesPerTick), loopLengthInSamples);
+
             while (midiSequence.getNumEvents() > currentEventIndex &&
-                   midiSequence.getEventTime(currentEventIndex) < currentPosition + (sample / samplesPerTick))
+                   midiSequence.getEventTime(currentEventIndex) < loopPosition)
             {
                 const auto* midiEvent = midiSequence.getEventPointer(currentEventIndex);
                 if (midiEvent->message.isNoteOnOrOff() || midiEvent->message.isController())
@@ -209,13 +235,22 @@ void SynergyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
                 }
                 ++currentEventIndex;
             }
+
+            // Reset the event index when reaching the end of the sequence
+            if (currentEventIndex >= midiSequence.getNumEvents())
+            {
+                currentEventIndex = 0;
+            }
         }
 
         currentPosition += numSamples / samplesPerTick;
 
-        if (currentEventIndex >= midiSequence.getNumEvents())
+        // Reset position and event index when reaching the end of the loop
+        if (currentPosition >= loopLengthInSamples / samplesPerTick)
         {
-            isPlaying = false; // Stop playing once all events have been processed
+            currentPosition -= loopLengthInSamples / samplesPerTick;
+            currentEventIndex = 0;
+            isPreviewing = false;
         }
     }
 
@@ -241,16 +276,49 @@ juce::AudioProcessorEditor* SynergyAudioProcessor::createEditor()
 //==============================================================================
 void SynergyAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    std::unique_ptr<juce::XmlElement> xml(parameters.state.createXml());
+
+    // Serialize the vector of MidiNotes
+    juce::XmlElement* notesElement = xml->createNewChildElement("MidiNotes");
+    for (const auto& note : midiNotes)
+    {
+        juce::XmlElement* noteElement = notesElement->createNewChildElement("MidiNote");
+        noteElement->setAttribute("pitch", note.pitch);
+        noteElement->setAttribute("octave", note.octave);
+        noteElement->setAttribute("startBeat", note.startBeat);
+        noteElement->setAttribute("lengthInBeats", note.lengthInBeats);
+    }
+
+    copyXmlToBinary(*xml, destData);
     
 }
 
 void SynergyAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+
+    if (xmlState != nullptr)
+    {
+        if (xmlState->hasTagName(parameters.state.getType()))
+        {
+            parameters.state = juce::ValueTree::fromXml(*xmlState);
+
+            // Deserialize the vector of MidiNotes
+            midiNotes.clear();
+            if (auto* notesElement = xmlState->getChildByName("MidiNotes"))
+            {
+                for (auto* noteElement : notesElement->getChildIterator())
+                {
+                    MidiNote note;
+                    note.pitch = noteElement->getIntAttribute("pitch");
+                    note.octave = noteElement->getIntAttribute("octave");
+                    note.startBeat = (float)noteElement->getDoubleAttribute("startBeat");
+                    note.lengthInBeats = (float)noteElement->getDoubleAttribute("lengthInBeats");
+                    midiNotes.push_back(note);
+                }
+            }
+        }
+    }
 }
 
 //==============================================================================
@@ -284,12 +352,14 @@ void SynergyAudioProcessor::playAudio()
 {
     if (midiSequence.getNumEvents() > 0)
     {
-        bpm = getMidiFileBPM();
-        isPlaying = true;
+        //bpm = getMidiFileBPM();
+        updateBPMFromHost();
+        isPreviewing = true;
         currentPosition = 0;
         currentEventIndex = 0;
     }
 }
+
 
 void SynergyAudioProcessor::setBPM(double newBPM)
 {

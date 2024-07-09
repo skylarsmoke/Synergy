@@ -184,6 +184,10 @@ void MidiViewer::mouseEnter(const juce::MouseEvent& event)
     midiDragOutput->setVisible(true);
 }
 
+std::vector<MidiNote> MidiViewer::getMidiNotes()
+{
+    return midiNotes;
+}
 
 
 

@@ -85,7 +85,7 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     varietySliderValue.setText((juce::String)varietySlider.getValue(), juce::NotificationType::dontSendNotification);
     varietySliderValue.setColour(juce::Label::textColourId, theme->mainSliderColor);
     varietySliderValue.setJustificationType(Justification::centred);
-    varietySliderValue.setTooltip("Determines how different notes can be from the reference midi. The lower the variety the more bassline like midi you will generate.");
+    varietySliderValue.setTooltip("Variety of notes generated. Higher values lead to more note generation and shorter notes.");
     addAndMakeVisible(varietySliderValue);
 
     // generate button
@@ -184,13 +184,16 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     */
 
     // product authentication
-    //addChildComponent(productLockScreen);
+    addChildComponent(productLockScreen);
 
     //// product reactivation
-    //productLockScreen.reactivate();
+    productLockScreen.reactivate();
 
-    //showUnlockForm();
+    showUnlockForm();
 
+    //if (audioProcessor.midiNotes.size() > 0) midiViewer.setMidiNotes(audioProcessor.midiNotes);
+
+    juce::Desktop::getInstance().setGlobalScaleFactor(1.0f);
 }
 
 SynergyAudioProcessorEditor::~SynergyAudioProcessorEditor()
@@ -242,6 +245,9 @@ void SynergyAudioProcessorEditor::paint (juce::Graphics& g)
 
 void SynergyAudioProcessorEditor::resized()
 {
+
+    auto desktopScale = juce::Desktop::getInstance().getGlobalScaleFactor();
+    setTransform(juce::AffineTransform::scale(desktopScale));
     // product lock screen
     productLockScreen.setBounds(0, 0, 900, 700);
 

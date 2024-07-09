@@ -11,6 +11,8 @@
 #include <JuceHeader.h>
 #include "Bass1.h"
 #include "Bass1Voice.h"
+#include "MidiNote.h"
+#include "MidiViewer.h"
 
 //==============================================================================
 /**
@@ -87,11 +89,15 @@ public:
     /// <returns></returns>
     double getMidiFileBPM();
 
+
     // variables
     float noteOnVel = 0;
     juce::MidiFile midiFile;
 
     juce::MidiMessageSequence midiSequence;
+
+    juce::AudioProcessorValueTreeState parameters;
+    std::vector<MidiNote> midiNotes;
 
 private:
     juce::Synthesiser synth;
@@ -99,6 +105,8 @@ private:
     juce::AudioFormatManager formatManager;
     double sampleRate = 48000;
     bool isPlaying = false;
+    bool isPreviewing = false;
+    bool wasPlaying = false;
     int currentEventIndex = 0;
     double bpm = 175.0;  // Default BPM
     int ppq = 960;       // Default PPQ

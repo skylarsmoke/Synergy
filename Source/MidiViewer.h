@@ -31,6 +31,7 @@ public:
 
     void setMidiNotes(const std::vector<MidiNote>& notes);
 
+    std::vector<MidiNote> getMidiNotes();
 
     void mouseEnter(const juce::MouseEvent& event) override;
 

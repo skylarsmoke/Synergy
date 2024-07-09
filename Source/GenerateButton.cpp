@@ -123,6 +123,7 @@ void GenerateButton::generate()
     if (newBassline.empty()) return;
 
     midiViewer->setMidiNotes(newBassline);
+    audioProcessor.midiNotes = newBassline; // set the midi notes in the audio processor for state information purposes
     viewport->setVisible(true);
 
 }

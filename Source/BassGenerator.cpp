@@ -224,6 +224,11 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
     int minDensity = 30; // Ensures there's always at least some notes
     int adjustedVelocity = std::max(noteVelocity, minDensity);
 
+    // Adjust the influence of noteVariety on generating new notes
+    // Ensure noteVariety is between 0 and 100
+    noteVariety = std::max(0, std::min(100, noteVariety));
+    int varietyThreshold = 100 - noteVariety;
+
     // First pass: Generate the loop of specified length
     while (totalBeats < loopBeats)
     {
@@ -241,7 +246,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
         // Determine if we should use the melody note or generate a new note based on noteVariety
         int useMelodyNote = std::rand() % 100;
         int bassPitch;
-        if (useMelodyNote < (100 - noteVariety))
+        if (useMelodyNote < varietyThreshold)
         {
             bassPitch = melodyNote.pitch;
         }
@@ -263,11 +268,12 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
             bassPitch = (bassPitch % 12) + (referencePitch % 12) + 12; // Adjust within 1st, 2nd, and 3rd octaves
         }
 
-        // Introduce a higher probability for shorter note lengths
+        // Introduce a higher probability for shorter note lengths based on noteVariety
         float noteLength;
         int lengthProbability = std::rand() % 100;
-        int randomOdds = std::rand() % 61 + 20;
-        if (lengthProbability < randomOdds) // 80% chance for faster notes
+        // Scale randomOdds according to noteVariety
+        int randomOdds = std::rand() % (100 - noteVariety + 1) + noteVariety;
+        if (lengthProbability < randomOdds) // Higher variety means more shorter notes
         {
             noteLength = (std::rand() % 2 + 1) * 0.5f; // Eighth or sixteenth notes
         }
@@ -360,6 +366,11 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
     int minDensity = 30; // Ensures there's always at least some notes
     int adjustedVelocity = std::max(noteVelocity, minDensity);
 
+    // Adjust the influence of noteVariety on generating new notes
+    // Ensure noteVariety is between 0 and 100
+    noteVariety = std::max(0, std::min(100, noteVariety));
+    int varietyThreshold = 100 - noteVariety;
+
     // First pass: Generate the loop of specified length
     while (totalBeats < loopBeats)
     {
@@ -384,7 +395,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
         // Determine if we should use the chord note or generate a new note based on noteVariety
         int useChordNote = std::rand() % 100;
         int bassPitch;
-        if (useChordNote < (100 - noteVariety))
+        if (useChordNote < varietyThreshold)
         {
             bassPitch = chordNote.pitch;
         }
@@ -406,11 +417,12 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
             bassPitch = (bassPitch % 12) + (referencePitch % 12) + 12; // Adjust within 1st, 2nd, and 3rd octaves
         }
 
-        // Introduce a higher probability for shorter note lengths
+        // Introduce a higher probability for shorter note lengths based on noteVariety
         float noteLength;
         int lengthProbability = std::rand() % 100;
-        int randomOdds = std::rand() % 61 + 20;
-        if (lengthProbability < randomOdds) // 80% chance for faster notes
+        // Scale randomOdds according to noteVariety
+        int randomOdds = std::rand() % (100 - noteVariety + 1) + noteVariety;
+        if (lengthProbability < randomOdds) // Higher variety means more shorter notes
         {
             noteLength = (std::rand() % 2 + 1) * 0.5f; // Eighth or sixteenth notes
         }
@@ -513,6 +525,11 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
     int minDensity = 30; // Ensures there's always at least some notes
     int adjustedVelocity = std::max(noteVelocity, minDensity);
 
+    // Adjust the influence of noteVariety on generating new notes
+    // Ensure noteVariety is between 0 and 100
+    noteVariety = std::max(0, std::min(100, noteVariety));
+    int varietyThreshold = 100 - noteVariety;
+
     // First pass: Generate the loop of specified length
     while (totalBeats < loopBeats)
     {
@@ -548,11 +565,12 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
 
         bassPitch = std::max(12, std::min(47, bassPitch));
 
-        // Introduce a higher probability for shorter note lengths
+        // Introduce a higher probability for shorter note lengths based on noteVariety
         float noteLength;
         int lengthProbability = std::rand() % 100;
-        int randomOdds = std::rand() % 61 + 20;
-        if (lengthProbability < randomOdds) // 80% chance for faster notes
+        // Scale randomOdds according to noteVariety
+        int randomOdds = std::rand() % (100 - noteVariety + 1) + noteVariety;
+        if (lengthProbability < randomOdds) // Higher variety means more shorter notes
         {
             noteLength = (std::rand() % 2 + 1) * 0.5f; // Eighth or sixteenth notes
         }
@@ -630,6 +648,11 @@ std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety,
     int minDensity = 30; // Ensures there's always at least some notes
     int adjustedVelocity = std::max(noteVelocity, minDensity);
 
+    // Adjust the influence of noteVariety on generating new notes
+    // Ensure noteVariety is between 0 and 100
+    noteVariety = std::max(0, std::min(100, noteVariety));
+    int varietyThreshold = 100 - noteVariety;
+
     // Randomly select a starting note in the scale within the 3rd and 4th octaves
     int startingPitch = scales[musicalKey][std::rand() % scales[musicalKey].size()] + 36; // Minimum pitch is C3 (36)
     while (startingPitch >= 60) startingPitch -= 12; // Maximum pitch is B4 (59)
@@ -663,11 +686,12 @@ std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety,
             bassPitch = (bassPitch % 12) + (referencePitch % 12) + 36; // Adjust within 3rd and 4th octaves
         }
 
-        // Introduce a higher probability for shorter note lengths
+        // Introduce a higher probability for shorter note lengths based on noteVariety
         float noteLength;
         int lengthProbability = std::rand() % 100;
-        int randomOdds = std::rand() % 61 + 20;
-        if (lengthProbability < randomOdds) // 80% chance for faster notes
+        // Scale randomOdds according to noteVariety
+        int randomOdds = std::rand() % (100 - noteVariety + 1) + noteVariety;
+        if (lengthProbability < randomOdds) // Higher variety means more shorter notes
         {
             noteLength = (std::rand() % 2 + 1) * 0.5f; // Eighth or sixteenth notes
         }
