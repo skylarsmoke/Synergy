@@ -30,13 +30,13 @@ void MidiDragOutput::paint (juce::Graphics& g)
 {
     
 
-    g.setColour(juce::Colour(100, 100, 100).withAlpha(0.1f)); // Set the colour with transparency
+    g.setColour(juce::Colour(70, 70, 70).withAlpha(0.5f)); // Set the colour with transparency
     g.fillRoundedRectangle(245, 45, 205, 100, 2.0f);
 
     g.setOpacity(1.0f);
     g.drawImageWithin(juce::ImageCache::getFromMemory(BinaryData::MidiIcon_png, BinaryData::MidiIcon_pngSize), 320, 60, 50, 50, juce::RectanglePlacement::centred);
 
-    g.setColour(juce::Colour(20, 20, 20));
+    g.setColour(juce::Colour(110, 88, 255));
     g.setFont(synergyFont);
     g.drawSingleLineText("Drag Generated MIDI File", 265, 130);
 

@@ -91,8 +91,10 @@ private:
     juce::Slider varietySlider;
     VelocitySliderOverlay velocitySliderOverlay;
     VelocitySliderOverlay varietySliderOverlay;
+    juce::Slider swingSlider;
     juce::Label noteVelocityValue;
     juce::Label varietySliderValue;
+    juce::Label swingSliderValue;
 
     // main font
     juce::Font synergyFont;
@@ -176,6 +178,10 @@ private:
     void showUnlockForm();
     void verifyPluginIsActivated();
     void previewMidi();
+
+    bool keyPressed(const juce::KeyPress& key) override;
+    bool shiftHeld = false; // Flag to track if the Shift key is held
+
     
     std::unique_ptr<Settings> settings;
 

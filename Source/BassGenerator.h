@@ -51,7 +51,8 @@ public:
                                            const std::string& inputMusicalKey, 
                                            int noteVariety,
                                            int loopLength,
-                                           int noteVelocity);
+                                           int noteVelocity,
+                                           int swing);
 
     
 
@@ -131,6 +132,17 @@ private:
     std::vector<int> adjustScale(const std::vector<int>& scale, int semiTones);
 
     /// <summary>
+    /// Sets the swing
+    /// </summary>
+    void setSwing(int swingValue);
+
+    /// <summary>
+    /// Applies the swing
+    /// </summary>
+    /// <param name="notes"></param>
+    void applySwing(std::vector<MidiNote>& notes);
+
+    /// <summary>
     /// Returns whether or not a given note is in the current musical scale
     /// </summary>
     /// <param name="note">Note</param>
@@ -146,5 +158,7 @@ private:
     /// Saves chain data to a file
     /// </summary>
     void saveData(const std::string& pathToPutData);
+
+    int swing;
     
 };

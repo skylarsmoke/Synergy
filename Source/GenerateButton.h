@@ -35,6 +35,7 @@ public:
                    Slider& varietySliderV,
                    SynergyAudioProcessor&,
                    SettingsCache&,
+                   Slider&,
                    Slider&);
 
     ~GenerateButton() override;
@@ -49,6 +50,15 @@ public:
 
     juce::MidiFile outputMidiFile;
 
+
+    /// <summary>
+    /// Creates a midi file from a midi notes vector
+    /// </summary>
+    /// <param name="notes">Notes</param>
+    /// <param name="inputMidiFile">Input Midi File</param>
+    /// <param name="outputFile">Output File</param>
+    void createMidiFile(const std::vector<MidiNote>& notes, const juce::MidiFile& inputMidiFile);
+
 private:
     juce::Rectangle<int> hitArea{ 100, 60, 180, 100 };
     BassGenerator* bassGenerator;
@@ -58,6 +68,7 @@ private:
     ComboBox* musicalKey;
     Slider* varietySlider;
     Slider* velocitySlider;
+    Slider* swingSlider;
     SynergyAudioProcessor& audioProcessor;
     SettingsCache* settingsCache;
 
@@ -67,13 +78,6 @@ private:
     /// </summary>
     void generate();
 
-    /// <summary>
-    /// Creates a midi file from a midi notes vector
-    /// </summary>
-    /// <param name="notes">Notes</param>
-    /// <param name="inputMidiFile">Input Midi File</param>
-    /// <param name="outputFile">Output File</param>
-    void createMidiFile(const std::vector<MidiNote>& notes, const juce::MidiFile& inputMidiFile);
 
     /// <summary>
     /// Sets the bassline loop from the settings cache

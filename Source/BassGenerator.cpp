@@ -28,28 +28,28 @@ void BassGenerator::initializeScales()
     // map of musical keys to their corresponding major scale notes
     // Major Scales
     scales["C"] = majorScale;
-    scales["C#"] = adjustScale(majorScale, 1);
+    scales["Db"] = adjustScale(majorScale, 1);
     scales["D"] = adjustScale(majorScale, 2);
-    scales["D#"] = adjustScale(majorScale, 3);
+    scales["Eb"] = adjustScale(majorScale, 3);
     scales["E"] = adjustScale(majorScale, 4);
     scales["F"] = adjustScale(majorScale, 5);
-    scales["F#"] = adjustScale(majorScale, 6);
+    scales["Gb"] = adjustScale(majorScale, 6);
     scales["G"] = adjustScale(majorScale, 7);
-    scales["G#"] = adjustScale(majorScale, 8);
+    scales["Ab"] = adjustScale(majorScale, 8);
     scales["A"] = adjustScale(majorScale, 9);
-    scales["A#"] = adjustScale(majorScale, 10);
+    scales["Bb"] = adjustScale(majorScale, 10);
     scales["B"] = adjustScale(majorScale, 11);
 
     // Minor scales
     scales["Cm"] = minorScale;
-    scales["C#m"] = adjustScale(minorScale, 1);
+    scales["Dbm"] = adjustScale(minorScale, 1);
     scales["Dm"] = adjustScale(minorScale, 2);
-    scales["D#m"] = adjustScale(minorScale, 3);
+    scales["Ebm"] = adjustScale(minorScale, 3);
     scales["Em"] = adjustScale(minorScale, 4);
     scales["Fm"] = adjustScale(minorScale, 5);
-    scales["F#m"] = adjustScale(minorScale, 6);
+    scales["Gbm"] = adjustScale(minorScale, 6);
     scales["Gm"] = adjustScale(minorScale, 7);
-    scales["G#m"] = adjustScale(minorScale, 8);
+    scales["Abm"] = adjustScale(minorScale, 8);
     scales["Am"] = adjustScale(minorScale, 9);
     scales["Bbm"] = adjustScale(minorScale, 10);
     scales["Bm"] = adjustScale(minorScale, 11);
@@ -72,6 +72,38 @@ bool BassGenerator::isNoteInScale(int note)
     int noteInOctave = note % 12;
     const std::vector<int>& scale = scales[musicalKey];
     return std::find(scale.begin(), scale.end(), noteInOctave) != scale.end();
+}
+
+void BassGenerator::setSwing(int swingValue)
+{
+    swing = std::max(0, std::min(100, swingValue));
+}
+
+void BassGenerator::applySwing(std::vector<MidiNote>& notes)
+{
+    float maxSwingOffset = 0.3f; // Maximum offset in terms of 8th note fraction
+    float swingFactor = (swing / 100.0f) * maxSwingOffset; // Scale swing to a max of 0.5 of an 8th note
+
+    for (size_t i = 0; i < notes.size(); ++i)
+    {
+        // Determine the position within the beat
+        float positionInBeat = notes[i].startBeat - static_cast<int>(notes[i].startBeat);
+
+        // Apply swing to the off-beat 8th notes (positions 0.5, 1.5, 2.5, etc.)
+        if (positionInBeat == 0.5f || positionInBeat == 1.5f || positionInBeat == 2.5f || positionInBeat == 3.5f)
+        {
+            // Calculate the amount of delay for the swing
+            float delay = swingFactor * 0.5f;
+
+            notes[i].startBeat += delay; // Apply the delay
+
+            // Subtract the delay from the length to prevent overlap
+            notes[i].lengthInBeats -= delay;
+            if (notes[i].lengthInBeats < 0.0f) {
+                notes[i].lengthInBeats = 0.0f; // Ensure length is not negative
+            }
+        }
+    }
 }
 
 void BassGenerator::trainFromFolder(const String& folderPath)
@@ -98,8 +130,7 @@ void BassGenerator::trainFromFolder(const String& folderPath)
         train(juceMidiFile);
     }
 
-    // TODO: Delete this before making production version
-    saveData("C:\\Users\\skyla\\OneDrive\\Desktop\\synergyBassData.json");
+    //saveData("C:\\Users\\skyla\\OneDrive\\Desktop\\synergyBassData.json");
 }
 
 void BassGenerator::train(const MidiFile& midiFile)
@@ -160,7 +191,8 @@ std::vector<MidiNote> BassGenerator::generateBassline(const MidiFile& inputMidiF
                                                       const std::string& inputMusicalKey,
                                                       int noteVariety,
                                                       int loopLength,
-                                                      int noteVelocity)
+                                                      int noteVelocity,
+                                                      int swing)
 {
     std::vector<MidiNote> newBassline;
 
@@ -168,6 +200,8 @@ std::vector<MidiNote> BassGenerator::generateBassline(const MidiFile& inputMidiF
     std::size_t spacePos = inputMusicalKey.find(' ');
     auto minorString = inputMusicalKey.find("Minor") != std::string::npos ? "m" : "";
     musicalKey = inputMusicalKey.substr(0, spacePos) + minorString;
+
+    setSwing(swing);
 
     if (stemType == "Melody")
     {
@@ -198,6 +232,7 @@ std::vector<MidiNote> BassGenerator::generateBassline(const MidiFile& inputMidiF
         newBassline = generateBasslineNoMidi(noteVariety, loopLength, noteVelocity);
     }
 
+    if (swing != 0) applySwing(newBassline);
    
     return newBassline;
 
@@ -221,7 +256,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
     int referencePitch = melodyNotes[0].pitch;
 
     // Ensure a minimum density of notes
-    int minDensity = 30; // Ensures there's always at least some notes
+    int minDensity = 10; // Ensures there's always at least some notes
     int adjustedVelocity = std::max(noteVelocity, minDensity);
 
     // Adjust the influence of noteVariety on generating new notes
@@ -229,12 +264,16 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
     noteVariety = std::max(0, std::min(100, noteVariety));
     int varietyThreshold = 100 - noteVariety;
 
+    // Minimum number of notes in the bassline
+    int minNotes = 4;
+    int notesAdded = 0;
+
     // First pass: Generate the loop of specified length
     while (totalBeats < loopBeats)
     {
         // Determine if a note should be added based on adjustedVelocity
         int addNoteProbability = std::rand() % 100;
-        if (addNoteProbability >= adjustedVelocity)
+        if (addNoteProbability >= adjustedVelocity && notesAdded >= minNotes)
         {
             totalBeats += barLength / 4; // Skip a quarter of a bar before next decision
             continue;
@@ -303,6 +342,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
             MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
             basslineNotes.push_back(newNote);
             loopedBassline.push_back(newNote);
+            notesAdded++;
         }
         else
         {
@@ -314,6 +354,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
             MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
             basslineNotes.push_back(newNote);
             loopedBassline.push_back(newNote);
+            notesAdded++;
         }
 
         totalBeats += noteLength;
@@ -333,9 +374,27 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromMelody(const std::vecto
         }
     }
 
+    // Ensure there is some diversity in the notes
+    std::set<int> uniquePitches;
+    for (const auto& note : basslineNotes)
+    {
+        uniquePitches.insert(note.pitch);
+    }
+
+    // If all notes are the same, adjust a few of them
+    if (uniquePitches.size() < 2)
+    {
+        for (auto& note : basslineNotes)
+        {
+            note.pitch = getNextNoteFromChain(note.pitch).pitch;
+            while (note.pitch < 12) note.pitch += 12;  // Minimum pitch is C1
+            while (note.pitch >= 48) note.pitch -= 12; // Maximum pitch is B3
+            if (uniquePitches.size() > 1)
+                break;
+        }
+    }
+
     return basslineNotes;
-
-
 }
 
 std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vector<MidiNote>& chordNotes,
@@ -363,7 +422,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
     int referencePitch = chordNotes[0].pitch;
 
     // Ensure a minimum density of notes
-    int minDensity = 30; // Ensures there's always at least some notes
+    int minDensity = 10; // Ensures there's always at least some notes
     int adjustedVelocity = std::max(noteVelocity, minDensity);
 
     // Adjust the influence of noteVariety on generating new notes
@@ -371,12 +430,16 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
     noteVariety = std::max(0, std::min(100, noteVariety));
     int varietyThreshold = 100 - noteVariety;
 
+    // Minimum number of notes in the bassline
+    int minNotes = 4;
+    int notesAdded = 0;
+
     // First pass: Generate the loop of specified length
     while (totalBeats < loopBeats)
     {
         // Determine if a note should be added based on adjustedVelocity
         int addNoteProbability = std::rand() % 100;
-        if (addNoteProbability >= adjustedVelocity)
+        if (addNoteProbability >= adjustedVelocity && notesAdded >= minNotes)
         {
             totalBeats += barLength / 4; // Skip a quarter of a bar before next decision
             continue;
@@ -452,6 +515,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
             MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
             basslineNotes.push_back(newNote);
             loopedBassline.push_back(newNote);
+            notesAdded++;
         }
         else
         {
@@ -463,6 +527,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
             MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
             basslineNotes.push_back(newNote);
             loopedBassline.push_back(newNote);
+            notesAdded++;
         }
 
         totalBeats += noteLength;
@@ -479,6 +544,26 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromChords(const std::vecto
                 loopedNote.startBeat += i * loopBeats;
                 basslineNotes.push_back(loopedNote);
             }
+        }
+    }
+
+    // Ensure there is some diversity in the notes
+    std::set<int> uniquePitches;
+    for (const auto& note : basslineNotes)
+    {
+        uniquePitches.insert(note.pitch);
+    }
+
+    // If all notes are the same, adjust a few of them
+    if (uniquePitches.size() < 2)
+    {
+        for (auto& note : basslineNotes)
+        {
+            note.pitch = getNextNoteFromChain(note.pitch).pitch;
+            while (note.pitch < 12) note.pitch += 12;  // Minimum pitch is C1
+            while (note.pitch >= 48) note.pitch -= 12; // Maximum pitch is B3
+            if (uniquePitches.size() > 1)
+                break;
         }
     }
 
@@ -522,7 +607,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
     float referenceBeat = kickNotes[0].startBeat;
 
     // Ensure a minimum density of notes
-    int minDensity = 30; // Ensures there's always at least some notes
+    int minDensity = 10; // Ensures there's always at least some notes
     int adjustedVelocity = std::max(noteVelocity, minDensity);
 
     // Adjust the influence of noteVariety on generating new notes
@@ -530,12 +615,16 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
     noteVariety = std::max(0, std::min(100, noteVariety));
     int varietyThreshold = 100 - noteVariety;
 
+    // Minimum number of notes in the bassline
+    int minNotes = 4;
+    int notesAdded = 0;
+
     // First pass: Generate the loop of specified length
     while (totalBeats < loopBeats)
     {
         // Determine if a note should be added based on adjustedVelocity
         int addNoteProbability = std::rand() % 100;
-        if (addNoteProbability >= adjustedVelocity)
+        if (addNoteProbability >= adjustedVelocity && notesAdded >= minNotes)
         {
             totalBeats += barLength / 4; // Skip a quarter of a bar before next decision
             continue;
@@ -600,6 +689,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
             MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
             basslineNotes.push_back(newNote);
             loopedBassline.push_back(newNote);
+            notesAdded++;
         }
         else
         {
@@ -611,6 +701,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
             MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
             basslineNotes.push_back(newNote);
             loopedBassline.push_back(newNote);
+            notesAdded++;
         }
 
         totalBeats += noteLength;
@@ -630,12 +721,30 @@ std::vector<MidiNote> BassGenerator::generateBasslineFromDrums(const std::vector
         }
     }
 
+    // Ensure there is some diversity in the notes
+    std::set<int> uniquePitches;
+    for (const auto& note : basslineNotes)
+    {
+        uniquePitches.insert(note.pitch);
+    }
+
+    // If all notes are the same, adjust a few of them
+    if (uniquePitches.size() < 2)
+    {
+        for (auto& note : basslineNotes)
+        {
+            note.pitch = getNextNoteFromChain(note.pitch).pitch;
+            while (note.pitch < 12) note.pitch += 12;  // Minimum pitch is C1
+            while (note.pitch >= 48) note.pitch -= 12; // Maximum pitch is B3
+            if (uniquePitches.size() > 1)
+                break;
+        }
+    }
+
     return basslineNotes;
 }
 
-std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety,
-                                                            int loopLength,
-                                                            int noteVelocity)
+std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety, int loopLength, int noteVelocity)
 {
     std::vector<MidiNote> basslineNotes;
     std::vector<MidiNote> loopedBassline;
@@ -645,7 +754,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety,
     float maxBeats = 8 * barLength; // Maximum length is 8 bars
 
     // Ensure a minimum density of notes
-    int minDensity = 30; // Ensures there's always at least some notes
+    int minDensity = 10; // Ensures there's always at least some notes
     int adjustedVelocity = std::max(noteVelocity, minDensity);
 
     // Adjust the influence of noteVariety on generating new notes
@@ -658,12 +767,16 @@ std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety,
     while (startingPitch >= 60) startingPitch -= 12; // Maximum pitch is B4 (59)
     int referencePitch = startingPitch;
 
+    // Minimum number of notes in the bassline
+    int minNotes = 4;
+    int notesAdded = 0;
+
     // First pass: Generate the loop of specified length
     while (totalBeats < loopBeats)
     {
         // Determine if a note should be added based on adjustedVelocity
         int addNoteProbability = std::rand() % 100;
-        if (addNoteProbability >= adjustedVelocity)
+        if (addNoteProbability >= adjustedVelocity && notesAdded >= minNotes)
         {
             totalBeats += barLength / 4; // Skip a quarter of a bar before next decision
             continue;
@@ -721,6 +834,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety,
             MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
             basslineNotes.push_back(newNote);
             loopedBassline.push_back(newNote);
+            notesAdded++;
         }
         else
         {
@@ -730,6 +844,7 @@ std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety,
             MidiNote newNote = { bassPitch, bassPitch / 12, totalBeats, noteLength };
             basslineNotes.push_back(newNote);
             loopedBassline.push_back(newNote);
+            notesAdded++;
         }
 
         totalBeats += noteLength;
@@ -749,8 +864,29 @@ std::vector<MidiNote> BassGenerator::generateBasslineNoMidi(int noteVariety,
         }
     }
 
+    // Ensure there is some diversity in the notes
+    std::set<int> uniquePitches;
+    for (const auto& note : basslineNotes)
+    {
+        uniquePitches.insert(note.pitch);
+    }
+
+    // If all notes are the same, adjust a few of them
+    if (uniquePitches.size() < 2)
+    {
+        for (auto& note : basslineNotes)
+        {
+            note.pitch = getNextNoteFromChain(note.pitch).pitch;
+            while (note.pitch < 36) note.pitch += 12;  // Minimum pitch is C3 (36)
+            while (note.pitch >= 60) note.pitch -= 12; // Maximum pitch is B4 (59)
+            if (uniquePitches.size() > 1)
+                break;
+        }
+    }
+
     return basslineNotes;
 }
+
 
 MidiNote BassGenerator::getNextNoteFromChain(int currentNote)
 {

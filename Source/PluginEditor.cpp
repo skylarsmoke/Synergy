@@ -23,13 +23,45 @@ void SynergyAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
     else if (slider->getComponentID() == "Variety") {
         varietySliderValue.setText((juce::String)varietySlider.getValue(), juce::NotificationType::dontSendNotification);
     }
+    else if (slider->getComponentID() == "Swing") {
+        swingSliderValue.setText(((juce::String)swingSlider.getValue()) + "%", juce::NotificationType::dontSendNotification);
+    }
     
+}
+
+bool SynergyAudioProcessorEditor::keyPressed(const juce::KeyPress& key)
+{
+    if (key == juce::KeyPress::leftKey)
+    {
+        noteVelocitySlider.setValue(noteVelocitySlider.getValue() - 1, juce::sendNotificationSync);
+        return true;
+    }
+
+    if (key == juce::KeyPress::rightKey)
+    {
+        noteVelocitySlider.setValue(noteVelocitySlider.getValue() + 1, juce::sendNotificationSync);
+        return true;
+    }
+
+    if (key == juce::KeyPress::downKey)
+    {
+        varietySlider.setValue(varietySlider.getValue() - 1, juce::sendNotificationSync);
+        return true;
+    }
+
+    if (key == juce::KeyPress::upKey)
+    {
+        varietySlider.setValue(varietySlider.getValue() + 1, juce::sendNotificationSync);
+        return true;
+    }
+
+    return false;
 }
 
 //==============================================================================
 SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor& p)
     : AudioProcessorEditor (&p), midiFileDrop (p, messageBox), audioProcessor (p), startTime (Time::getMillisecondCounterHiRes() * 0.001),
-    productLockScreen(&productUnlockStatus, messageBox), generateButton(bassAI, midiViewer, stemTypeCombo.stemTypeCombo, selectKeyCombo.selectKeyCombo, viewport, varietySlider, p, settingsCache, noteVelocitySlider), 
+    productLockScreen(&productUnlockStatus, messageBox), generateButton(bassAI, midiViewer, stemTypeCombo.stemTypeCombo, selectKeyCombo.selectKeyCombo, viewport, varietySlider, p, settingsCache, noteVelocitySlider, swingSlider), 
     synergyLookAndFeel(&settingsCache), midiDragOutput(generateButton), midiViewer(midiDragOutput, 10)
 {
 
@@ -60,8 +92,10 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     noteVelocitySlider.setTextBoxIsEditable(false);
     noteVelocitySlider.setComponentID("NoteVelocity");
     noteVelocitySlider.addListener(this);
+    noteVelocitySlider.setVelocityBasedMode(true);
     addAndMakeVisible(noteVelocitySlider);
     addAndMakeVisible(velocitySliderOverlay);
+    velocitySliderOverlay.setInterceptsMouseClicks(false, false);
     
     noteVelocityValue.setText((juce::String)noteVelocitySlider.getValue(), juce::NotificationType::dontSendNotification);
     noteVelocityValue.setColour(juce::Label::textColourId, theme->mainSliderColor);
@@ -81,6 +115,7 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     varietySlider.addListener(this);
     addAndMakeVisible(varietySlider);
     addAndMakeVisible(varietySliderOverlay);
+    varietySliderOverlay.setInterceptsMouseClicks(false, false);
 
     varietySliderValue.setText((juce::String)varietySlider.getValue(), juce::NotificationType::dontSendNotification);
     varietySliderValue.setColour(juce::Label::textColourId, theme->mainSliderColor);
@@ -178,6 +213,25 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
 
     // midi drag output
     addChildComponent(midiDragOutput);
+
+    // swing slider
+    swingSlider.setSliderStyle(Slider::SliderStyle::LinearBar);
+    swingSlider.setRange(0, 100, 1);
+    swingSlider.setColour(Slider::textBoxOutlineColourId, Colours::transparentBlack);
+    swingSlider.setColour(Slider::textBoxTextColourId, Colours::transparentBlack);
+    swingSlider.setValue(0);
+    swingSlider.setMouseCursor(MouseCursor::PointingHandCursor);
+    swingSlider.setTextBoxIsEditable(false);
+    swingSlider.setComponentID("Swing");
+    swingSlider.addListener(this);
+    addAndMakeVisible(swingSlider);
+
+    swingSliderValue.setText(((juce::String)swingSlider.getValue()) + "%", juce::NotificationType::dontSendNotification);
+    swingSliderValue.setColour(juce::Label::textColourId, theme->mainSliderColor);
+    swingSliderValue.setJustificationType(Justification::centred);
+    swingSliderValue.setFont(13.0);
+    swingSliderValue.setTooltip("The amount of swing added to the bassline.");
+    addAndMakeVisible(swingSliderValue);
     
     /*
     * Everything after this needs to be last
@@ -191,7 +245,11 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
 
     showUnlockForm();
 
-    //if (audioProcessor.midiNotes.size() > 0) midiViewer.setMidiNotes(audioProcessor.midiNotes);
+    if (audioProcessor.midiNotes.size() > 0) {
+        midiViewer.setMidiNotes(audioProcessor.midiNotes);
+        viewport.setVisible(true);
+        generateButton.createMidiFile(audioProcessor.midiNotes, audioProcessor.midiFile);
+    }
 
     juce::Desktop::getInstance().setGlobalScaleFactor(1.0f);
 }
@@ -228,6 +286,10 @@ void SynergyAudioProcessorEditor::paint (juce::Graphics& g)
     Image settingsBorderImage = ImageCache::getFromMemory(BinaryData::settingsBordertransformed_png, BinaryData::settingsBordertransformed_pngSize);
     g.drawImageWithin(settingsBorderImage, 190, 280, settingsBorderImage.getWidth() - 190, settingsBorderImage.getHeight() - 190, RectanglePlacement::centred);
 
+    // swing image
+    Image swingImage = ImageCache::getFromMemory(BinaryData::SwingComponent_png, BinaryData::SwingComponent_pngSize);
+    g.drawImageWithin(swingImage, 635, 315, swingImage.getWidth() - 60, swingImage.getHeight() - 60, RectanglePlacement::centred);
+
     // slider border
     g.setColour(Colour(20, 20, 20));
     //g.drawRect(120, 195, 110, 25, 5);
@@ -239,7 +301,17 @@ void SynergyAudioProcessorEditor::paint (juce::Graphics& g)
     string versionString = "Execution Log           Build v";
     if (developmentMode) g.drawFittedText(versionString.append(ProjectInfo::versionString), 0, 0, getWidth(), 30, juce::Justification::topRight, 1);
     
+    g.setColour(theme->mainSliderColor);
 
+    // Define the rectangle dimensions and corner radius
+    float x = 728.0f;
+    float y = 366.0f;
+    float width = 60;  // Adjust to your component's width
+    float height = 10;  // Adjust to your component's height
+    float cornerRadius = 4.0f;  // Adjust this value to control the roundness of the corners
+
+    // Draw the rounded rectangle outline
+    g.drawRoundedRectangle(x, y, width, height, cornerRadius, 1.0f);  // The last parameter is the thickness of the outline
     
 }
 
@@ -290,6 +362,10 @@ void SynergyAudioProcessorEditor::resized()
     varietySlider.setBounds(696, 165, 127, 15);
     varietySliderOverlay.setBounds(696, 165, 127, 20);
     varietySliderValue.setBounds(734, 185, 50, 10);
+
+    // swing slider
+    swingSlider.setBounds(728, 366, 60, 10);
+    swingSliderValue.setBounds(788, 366, 40, 10);
     
     // settings button
     settingsButton.setBounds(375, 347, 35, 35);

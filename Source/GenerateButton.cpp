@@ -23,7 +23,8 @@ GenerateButton::GenerateButton(BassGenerator& bassAI,
                                Slider& varietySliderV,
                                SynergyAudioProcessor& p,
                                SettingsCache& sc,
-                               Slider& noteV) :
+                               Slider& noteV,
+                               Slider& swing) :
     bassGenerator(&bassAI), 
     midiViewer(&midiV), 
     stemType(&stemT), 
@@ -32,7 +33,8 @@ GenerateButton::GenerateButton(BassGenerator& bassAI,
     varietySlider(&varietySliderV),
     audioProcessor(p),
     settingsCache(&sc),
-    velocitySlider(&noteV)
+    velocitySlider(&noteV),
+    swingSlider(&swing)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -116,7 +118,7 @@ void GenerateButton::generate()
 
     int basslineLoopLength = setBasslineLoop();
     
-    auto newBassline = bassGenerator->generateBassline(audioProcessor.midiFile, stemType->getText(), musicalKey->getText().toStdString(), (int)varietySlider->getValue(), basslineLoopLength, (int)velocitySlider->getValue());
+    auto newBassline = bassGenerator->generateBassline(audioProcessor.midiFile, stemType->getText(), musicalKey->getText().toStdString(), (int)varietySlider->getValue(), basslineLoopLength, (int)velocitySlider->getValue(), (int)swingSlider->getValue());
 
     createMidiFile(newBassline, audioProcessor.midiFile);
 

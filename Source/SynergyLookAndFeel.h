@@ -260,16 +260,6 @@ public:
 		idealHeight = 25;
 	}
 
-	/*void drawLinearSliderOutline(juce::Graphics& g, int x, int y, int width, int height, juce::Slider::SliderStyle style, juce::Slider& slider) override {
-		
-
-	}*/
-	/*
-	juce::Slider::SliderLayout getSliderLayout(juce::Slider& slider) override
-	{
-		slider.text
-	}*/
-
 	void drawLinearSlider(juce::Graphics& g,
 						  int	x,
 						  int	y,
@@ -282,11 +272,18 @@ public:
 						  juce::Slider& slider)
 	{
 		g.setColour(slider.findColour(juce::Slider::textBoxHighlightColourId));
-		g.fillRect(x, y, (int)sliderPos - x, height);
-		
+
+		// Define the radius for the rounded corners
+		float cornerRadius = 3.0f;  // Adjust this value to control the roundness of the corners
+
+		// Draw the filled rectangle with rounded corners
+		juce::Rectangle<float> rect((float)x, (float)y, sliderPos - (float)x, (float)height);
+		g.fillRoundedRectangle(rect, cornerRadius);
+		//slider.out
 		
 
 	}
+
 
 
 private:

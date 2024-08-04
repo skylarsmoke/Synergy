@@ -190,23 +190,25 @@ void SynergyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
 
     buffer.clear();
 
+    midiMessages.clear(); // this ensures we do not play midi coming from the DAW
+
     // Get current playhead position and transport state
-    if (auto* playHead = getPlayHead())
-    {
-        juce::AudioPlayHead::CurrentPositionInfo positionInfo;
-        if (playHead->getCurrentPosition(positionInfo))
-        {
-            isPlaying = positionInfo.isPlaying;
-            bpm = positionInfo.bpm;
-            // If the transport has just started playing, reset the current position and event index
-            if (positionInfo.isPlaying && !wasPlaying)
-            {
-                currentPosition = 0.0;
-                currentEventIndex = 0;
-            }
-            wasPlaying = positionInfo.isPlaying;
-        }
-    }
+    //if (auto* playHead = getPlayHead())
+    //{
+    //    juce::AudioPlayHead::CurrentPositionInfo positionInfo;
+    //    if (playHead->getCurrentPosition(positionInfo))
+    //    {
+    //        isPlaying = positionInfo.isPlaying;
+    //        bpm = positionInfo.bpm;
+    //        // If the transport has just started playing, reset the current position and event index
+    //        if (positionInfo.isPlaying && !wasPlaying)
+    //        {
+    //            currentPosition = 0.0;
+    //            currentEventIndex = 0;
+    //        }
+    //        wasPlaying = positionInfo.isPlaying;
+    //    }
+    //}
 
     if (isPlaying || isPreviewing)
     {
@@ -350,7 +352,7 @@ void SynergyAudioProcessor::loadPreviewMidiFile(const juce::MidiMessageSequence 
 
 void SynergyAudioProcessor::playAudio()
 {
-    if (midiSequence.getNumEvents() > 0)
+    if (midiSequence.getNumEvents() > 0 && !isPreviewing)
     {
         //bpm = getMidiFileBPM();
         updateBPMFromHost();
@@ -358,6 +360,7 @@ void SynergyAudioProcessor::playAudio()
         currentPosition = 0;
         currentEventIndex = 0;
     }
+    else isPreviewing = false;
 }
 
 

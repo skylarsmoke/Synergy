@@ -41,9 +41,10 @@ void MidiFileDrop::paint (juce::Graphics& g)
     g.fillRect(4, 4, 192, 192);*/
 
     if (!midiLoaded) {
+
         g.drawImageWithin(juce::ImageCache::getFromMemory(BinaryData::MidiIcon_png, BinaryData::MidiIcon_pngSize), 320, 60, 50, 50, juce::RectanglePlacement::centred);
         
-        g.setColour(juce::Colour(20, 20, 20));
+        g.setColour(juce::Colour(110, 88, 255));
         g.setFont(synergyFont);
         g.drawSingleLineText("Drop MIDI File", 296, 130);
     }
@@ -51,7 +52,7 @@ void MidiFileDrop::paint (juce::Graphics& g)
     {
         g.drawImageWithin(juce::ImageCache::getFromMemory(BinaryData::CheckMarkIcon_png, BinaryData::CheckMarkIcon_pngSize), 320, 60, 50, 50, juce::RectanglePlacement::centred);
 
-        g.setColour(juce::Colour(20, 20, 20));
+        g.setColour(juce::Colour(110, 88, 255));
         g.setFont(synergyFont);
         g.drawSingleLineText("MIDI Loaded", 302, 130);
     }
