@@ -116,6 +116,7 @@ private:
     /// </summary>
     void updateBPMFromHost();
 
+    void fadeOutBuffer(juce::AudioBuffer<float>& buffer);
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SynergyAudioProcessor)

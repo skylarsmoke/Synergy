@@ -126,7 +126,7 @@ void ProductLockScreen::timerCallback()
         stopTimer();
         activateAttempted = false;
 
-        File licenseFile(File::getSpecialLocation(File::SpecialLocationType::currentApplicationFile).getParentDirectory().getChildFile("sbr_license.txt"));
+        File licenseFile(File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("sbr_license.txt"));
         licenseFile.replaceWithText(licenseKeyInput.getText());
     }
 }
@@ -155,7 +155,7 @@ void ProductLockScreen::activate()
 void ProductLockScreen::reactivate()
 {
     // cached license key
-    File licenseFile = File::getSpecialLocation(File::SpecialLocationType::currentApplicationFile).getParentDirectory().getChildFile("sbr_license.txt");
+    File licenseFile = File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("sbr_license.txt");
 
     // if the license file exists we attempt to verify
     if (licenseFile.existsAsFile())

@@ -162,7 +162,7 @@ bool SynergyAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) 
 
 void SynergyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-    //juce::ScopedNoDenormals noDenormals;
+    juce::ScopedNoDenormals noDenormals;
     //auto totalNumInputChannels  = getTotalNumInputChannels();
     //auto totalNumOutputChannels = getTotalNumOutputChannels();
 
@@ -210,21 +210,21 @@ void SynergyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     //    }
     //}
 
+    // Apply a small DC offset to prevent denormalization
+    const float antiDenormalOffset = 1.0e-18f; // A very small offset
+
     if (isPlaying || isPreviewing)
     {
-
         const double ticksPerQuarterNote = ppq;
         const double secondsPerQuarterNote = 60.0 / bpm;
         const double samplesPerQuarterNote = sampleRate * secondsPerQuarterNote;
         const double samplesPerTick = samplesPerQuarterNote / ticksPerQuarterNote;
-
         const int numSamples = buffer.getNumSamples();
         const double loopLengthInQuarters = 8 * 4; // 8 bars
         const double loopLengthInSamples = samplesPerQuarterNote * loopLengthInQuarters;
 
         for (int sample = 0; sample < numSamples; ++sample)
         {
-            // Calculate the current position within the loop
             double loopPosition = fmod(currentPosition + (sample / samplesPerTick), loopLengthInSamples);
 
             while (midiSequence.getNumEvents() > currentEventIndex &&
@@ -238,7 +238,6 @@ void SynergyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
                 ++currentEventIndex;
             }
 
-            // Reset the event index when reaching the end of the sequence
             if (currentEventIndex >= midiSequence.getNumEvents())
             {
                 currentEventIndex = 0;
@@ -247,22 +246,40 @@ void SynergyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
 
         currentPosition += numSamples / samplesPerTick;
 
-        // Reset position and event index when reaching the end of the loop
         if (currentPosition >= loopLengthInSamples / samplesPerTick)
         {
-            currentPosition -= loopLengthInSamples / samplesPerTick;
+            currentPosition = fmod(currentPosition, loopLengthInSamples / samplesPerTick);
             currentEventIndex = 0;
+
+            // Ensure the synth stops processing unnecessary data
+            synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
+
+            // Clear the buffer to avoid any leftover audio
+            buffer.clear();
             isPreviewing = false;
+        }
+        else
+        {
+            // Normal audio processing
+            synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
+        }
+
+        // Add a small DC offset to prevent denormals
+        for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
+        {
+            float* channelData = buffer.getWritePointer(channel);
+            for (int sample = 0; sample < numSamples; ++sample)
+            {
+                channelData[sample] += antiDenormalOffset;
+            }
         }
     }
 
-    // Process the MIDI messages to ensure they are handled by the synthesizer
-    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
-
-    // Clear the midiMessages buffer to prevent them from being sent to the system MIDI device
     midiMessages.clear();
 
+
 }
+
 
 //==============================================================================
 bool SynergyAudioProcessor::hasEditor() const

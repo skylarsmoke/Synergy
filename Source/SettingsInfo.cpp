@@ -24,7 +24,7 @@ SettingsInfo::SettingsInfo(SettingsCache* sc, SynergyAudioProcessor* p) : settin
 
     // license key
     // cached license key
-    File licenseFile = File::getSpecialLocation(File::SpecialLocationType::currentApplicationFile).getParentDirectory().getChildFile("sbr_license.txt");
+    File licenseFile = File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("sbr_license.txt");
     String licenseKey = "License Key: ";
     // if the license file exists we attempt to verify
     if (licenseFile.existsAsFile())
@@ -76,8 +76,9 @@ SettingsInfo::SettingsInfo(SettingsCache* sc, SynergyAudioProcessor* p) : settin
     basslineLoopSettingLabel.setFont(16.0f);
     addAndMakeVisible(basslineLoopSettingLabel);
 
-    basslineLoopSettingCombo.addItem("4 Bars", 1);
-    basslineLoopSettingCombo.addItem("8 Bars", 2);
+    basslineLoopSettingCombo.addItem("2 Bars", 1);
+    basslineLoopSettingCombo.addItem("4 Bars", 2);
+    basslineLoopSettingCombo.addItem("8 Bars", 3);
     basslineLoopSettingCombo.setSelectedId(settingsCache->basslineLoop);
     basslineLoopSettingCombo.setMouseCursor(juce::MouseCursor::PointingHandCursor);
     basslineLoopSettingCombo.setComponentID("BasslineLoop");
@@ -315,7 +316,7 @@ void SettingsInfo::saveSettings()
     var jsonVar(jsonData);
     String jsonString = JSON::toString(jsonVar, true);
 
-    File settingsFile(File::getSpecialLocation(File::SpecialLocationType::currentApplicationFile).getParentDirectory().getChildFile("sbr_settings.txt"));
+    File settingsFile(File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("sbr_settings.txt"));
     settingsFile.replaceWithText(jsonString);
 }
 

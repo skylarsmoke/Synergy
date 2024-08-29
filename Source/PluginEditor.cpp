@@ -438,7 +438,7 @@ void SynergyAudioProcessorEditor::previewMidi()
 void SynergyAudioProcessorEditor::loadSettings()
 {
     // Define the file path for loading settings
-    File settingsFile(File::getSpecialLocation(File::SpecialLocationType::currentApplicationFile).getParentDirectory().getChildFile("sbr_settings.txt"));
+    File settingsFile(File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("sbr_settings.txt"));
 
     if (!settingsFile.existsAsFile())
     {
@@ -446,7 +446,7 @@ void SynergyAudioProcessorEditor::loadSettings()
         // this is ok and will happen until users change the default settings
         // we set default values when this happens
 
-        settingsCache.basslineLoop = 1;
+        settingsCache.basslineLoop = 2;
         settingsCache.defaultVariety = 100;
         settingsCache.defaultNoteVelocity = 100;
         settingsCache.previewBass = 3;

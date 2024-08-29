@@ -110,9 +110,7 @@ bool isMidiFileValid(const juce::MidiFile& midiFile)
 }
 
 void GenerateButton::generate()
-{
-    //bassGenerator->trainFromFolder("C:\\Users\\skyla\\OneDrive\\Desktop\\Unison Essential MIDI Basslines");
-    
+{    
     if (!isMidiFileValid(audioProcessor.midiFile) && stemType->getText() != "None") return; // if the file is not valid, we do not generate
     outputMidiFile.clear();
 
@@ -135,9 +133,12 @@ int GenerateButton::setBasslineLoop()
     switch (settingsCache->basslineLoop)
     {
     case 1:
+        //ID for 2 bars
+        return 2;
+    case 2:
         // ID for 4 bars
         return 4;
-    case 2:
+    case 3:
         // ID for 2 bars
         return 8;
     default:

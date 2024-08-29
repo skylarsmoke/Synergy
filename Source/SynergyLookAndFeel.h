@@ -237,7 +237,7 @@ public:
 		g.setColour(juce::Colour(20, 20, 20));
 		g.fillRect(area);
 
-		if (text != "4 Bars" && text != "8 Bars") g.setFont(juce::Font(16.0f));
+		if (text != "4 Bars" && text != "8 Bars" && text != "2 Bars") g.setFont(juce::Font(16.0f));
 
 		if (isHighlighted || isTicked) 
 		{
