@@ -24,7 +24,7 @@ class MidiViewer;
 //==============================================================================
 /*
 */
-class GenerateButton  : public juce::Component
+class GenerateButton  : public juce::Component, private juce::Timer
 {
 public:
     GenerateButton(BassGenerator& bassAI, 
@@ -72,6 +72,9 @@ private:
     SynergyAudioProcessor& audioProcessor;
     SettingsCache* settingsCache;
 
+    // New label for showing the midi not loaded message
+    juce::Label warningMessageLabel;
+
 
     /// <summary>
     /// Calls logic when the generate button is clicked
@@ -84,6 +87,14 @@ private:
     /// </summary>
     /// <returns></returns>
     int setBasslineLoop();
+
+    /// <summary>
+    /// Shows a message when attempting to generate without a midi loaded
+    /// </summary>
+    /// <param name="message">Message</param>
+    void showWarningMessage(const juce::String& message);
+
+    void timerCallback() override;
     
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GenerateButton)

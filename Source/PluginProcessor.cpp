@@ -275,7 +275,7 @@ void SynergyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
         }
     }
 
-    midiMessages.clear();
+    //midiMessages.clear();
 
 
 }

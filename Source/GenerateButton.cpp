@@ -50,6 +50,12 @@ GenerateButton::GenerateButton(BassGenerator& bassAI,
     generateButton.setTooltip("Generates a bassline based off of the midi and parameters provided.");
     addAndMakeVisible(generateButton);
 
+    // add and configure the warning message label
+    warningMessageLabel.setText("", juce::dontSendNotification);
+    warningMessageLabel.setColour(Label::textColourId, juce::Colour(100, 100, 100));
+    warningMessageLabel.setJustificationType(Justification::centred);
+    warningMessageLabel.setAlpha(0.0f);  // Initially hidden
+    addAndMakeVisible(warningMessageLabel);
 }
 
 GenerateButton::~GenerateButton()
@@ -58,6 +64,20 @@ GenerateButton::~GenerateButton()
 
 void GenerateButton::paint (juce::Graphics& g)
 {
+    // Draw the rounded rectangle around the warning message label
+    if (warningMessageLabel.getAlpha() > 0.0f)  // Only draw if the label is visible
+    {
+        float cornerSize = 3.0f;   // Radius for the rounded corners
+        auto labelBounds = warningMessageLabel.getBounds().toFloat().reduced(5.0f);  // Add some padding around the label
+
+        // Set the fill color for the rounded rectangle (e.g., semi-transparent yellow)
+        g.setColour(juce::Colour(20, 20, 20).withAlpha(1.0f));  // 80% opacity
+        g.fillRoundedRectangle(labelBounds, cornerSize);
+
+        // Set the color for the border and draw it
+        g.setColour(juce::Colour(20, 20, 20).withAlpha(1.0f));  // Border color
+        g.drawRoundedRectangle(labelBounds, cornerSize, 2.0f);  // 2.0f is the line thickness
+    }
     
 }
 
@@ -66,6 +86,8 @@ void GenerateButton::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
     generateButton.setBounds(10, 10, 355, 200);
+
+    warningMessageLabel.setBounds(15, 10, 355, 40); // Position the warning message below the button
 }
 
 bool GenerateButton::hitTest(int x, int y)
@@ -111,7 +133,11 @@ bool isMidiFileValid(const juce::MidiFile& midiFile)
 
 void GenerateButton::generate()
 {    
-    if (!isMidiFileValid(audioProcessor.midiFile) && stemType->getText() != "None") return; // if the file is not valid, we do not generate
+    if (!isMidiFileValid(audioProcessor.midiFile) && stemType->getText() != "None") 
+    {
+        showWarningMessage("A MIDI file must be loaded to use this stem type.");
+        return; // if the file is not valid, we do not generate
+    }
     outputMidiFile.clear();
 
     int basslineLoopLength = setBasslineLoop();
@@ -130,7 +156,7 @@ void GenerateButton::generate()
 
 int GenerateButton::setBasslineLoop()
 {
-    switch (settingsCache->basslineLoop)
+    switch (settingsCache->activeLoopLength)
     {
     case 1:
         //ID for 2 bars
@@ -144,6 +170,22 @@ int GenerateButton::setBasslineLoop()
     default:
         std::cerr << "Bassline loop value not recognized";
     }
+}
+
+void GenerateButton::showWarningMessage(const String& message)
+{
+    warningMessageLabel.setText(message, dontSendNotification);
+    warningMessageLabel.setAlpha(1.0f);
+    warningMessageLabel.setVisible(true);
+    warningMessageLabel.repaint();
+    startTimer(2000); // Start a timer to hide the message after 2 seconds
+}
+
+void GenerateButton::timerCallback()
+{
+    warningMessageLabel.setAlpha(0.0f);  // Hide the message after 2 seconds
+    warningMessageLabel.repaint();  // Force repaint after changing the alpha
+    stopTimer();  // Stop the timer
 }
 
 

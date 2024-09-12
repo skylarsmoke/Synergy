@@ -232,18 +232,55 @@ SynergyAudioProcessorEditor::SynergyAudioProcessorEditor (SynergyAudioProcessor&
     swingSliderValue.setFont(13.0);
     swingSliderValue.setTooltip("The amount of swing added to the bassline.");
     addAndMakeVisible(swingSliderValue);
+
+    // loop buttons
+    switch (settingsCache.basslineLoop)
+    {
+    case 1:
+        twoBarButtonClicked();
+        break;
+    case 2:
+        fourBarButtonClicked();
+        break;
+    case 3:
+        eightBarButtonClicked();
+        break;
+    default:
+        fourBarButtonClicked();
+    }
+
+    twoBarLoopButton.setButtonText("2");
+    twoBarLoopButton.setComponentID("2BarLoop");
+    twoBarLoopButton.setMouseCursor(MouseCursor::PointingHandCursor);
+    twoBarLoopButton.onClick = [this] { twoBarButtonClicked(); };
+    twoBarLoopButton.setTooltip("Sets the loop length to 2 bars, ideal for short repeating patterns.");
+    addAndMakeVisible(twoBarLoopButton);
+
+    fourBarLoopButton.setButtonText("4");
+    fourBarLoopButton.setComponentID("4BarLoop");
+    fourBarLoopButton.setMouseCursor(MouseCursor::PointingHandCursor);
+    fourBarLoopButton.onClick = [this] { fourBarButtonClicked(); };
+    fourBarLoopButton.setTooltip("Sets the loop length to 4 bars, offering a balanced loop duration for most tracks.");
+    addAndMakeVisible(fourBarLoopButton);
+
+    eightBarLoopButton.setButtonText("8");
+    eightBarLoopButton.setComponentID("8BarLoop");
+    eightBarLoopButton.setMouseCursor(MouseCursor::PointingHandCursor);
+    eightBarLoopButton.onClick = [this] { eightBarButtonClicked(); };
+    eightBarLoopButton.setTooltip("Sets the loop length to 8 bars, great for longer, evolving musical phrases.");
+    addAndMakeVisible(eightBarLoopButton);
     
     /*
     * Everything after this needs to be last
     */
 
     // product authentication
-    addChildComponent(productLockScreen);
+    //addChildComponent(productLockScreen);
 
-    //// product reactivation
-    productLockScreen.reactivate();
+    ////// product reactivation
+    //productLockScreen.reactivate();
 
-    showUnlockForm();
+    //showUnlockForm();
 
     if (audioProcessor.midiNotes.size() > 0) {
         midiViewer.setMidiNotes(audioProcessor.midiNotes);
@@ -290,6 +327,9 @@ void SynergyAudioProcessorEditor::paint (juce::Graphics& g)
     Image swingImage = ImageCache::getFromMemory(BinaryData::SwingComponent_png, BinaryData::SwingComponent_pngSize);
     g.drawImageWithin(swingImage, 635, 315, swingImage.getWidth() - 60, swingImage.getHeight() - 60, RectanglePlacement::centred);
 
+    Image loopImage = ImageCache::getFromMemory(BinaryData::LoopComponent_png, BinaryData::LoopComponent_pngSize);
+    g.drawImageWithin(loopImage, 25, 295, loopImage.getWidth() - 60, loopImage.getHeight() - 60, RectanglePlacement::centred);
+
     // slider border
     g.setColour(Colour(20, 20, 20));
     //g.drawRect(120, 195, 110, 25, 5);
@@ -312,6 +352,9 @@ void SynergyAudioProcessorEditor::paint (juce::Graphics& g)
 
     // Draw the rounded rectangle outline
     g.drawRoundedRectangle(x, y, width, height, cornerRadius, 1.0f);  // The last parameter is the thickness of the outline
+
+    // draw loop rectangle
+    g.drawRect(104, 366, 62, 17, 1.0);
     
 }
 
@@ -375,6 +418,11 @@ void SynergyAudioProcessorEditor::resized()
 
     // record button
     refreshButton.setBounds(431, 350, 28, 28);
+
+    // loop buttons
+    twoBarLoopButton.setBounds(105, 367, 20, 15);
+    fourBarLoopButton.setBounds(125, 367, 20, 15);
+    eightBarLoopButton.setBounds(145, 367, 20, 15);
 
 
 }
@@ -499,4 +547,67 @@ void SynergyAudioProcessorEditor::refreshMidi()
     midiFileDrop.midiLoaded = false;
     midiFileDrop.repaint();
     audioProcessor.midiSequence.clear();
+}
+
+void SynergyAudioProcessorEditor::twoBarButtonClicked()
+{
+    // Deactivate other buttons
+    fourBarLoopButton.setColour(TextButton::buttonColourId, Colour(20, 20, 20));
+    fourBarLoopButton.setColour(TextButton::buttonOnColourId, Colour(20, 20, 20));
+    fourBarLoopButton.setColour(Label::textColourId, theme->mainSliderColor);
+
+    eightBarLoopButton.setColour(TextButton::buttonColourId, Colour(20, 20, 20));
+    eightBarLoopButton.setColour(TextButton::buttonOnColourId, Colour(20, 20, 20));
+    eightBarLoopButton.setColour(Label::textColourId, theme->mainSliderColor);
+
+    // Activate the clicked button
+    twoBarLoopButton.setColour(TextButton::buttonColourId, theme->mainSliderColor);
+    twoBarLoopButton.setColour(TextButton::buttonOnColourId, theme->mainSliderColor);
+    twoBarLoopButton.setColour(Label::textColourId, Colour(20, 20, 20));
+
+    // set bassline loop
+    settingsCache.activeLoopLength = 1;
+}
+
+void SynergyAudioProcessorEditor::fourBarButtonClicked()
+{
+    // Deactivate other buttons
+    twoBarLoopButton.setColour(TextButton::buttonColourId, Colour(20, 20, 20));
+    twoBarLoopButton.setColour(TextButton::buttonOnColourId, Colour(20, 20, 20));
+    twoBarLoopButton.setColour(Label::textColourId, theme->mainSliderColor);
+
+
+    eightBarLoopButton.setColour(TextButton::buttonColourId, Colour(20, 20, 20));
+    eightBarLoopButton.setColour(TextButton::buttonOnColourId, Colour(20, 20, 20));
+    eightBarLoopButton.setColour(Label::textColourId, theme->mainSliderColor);
+
+    // Activate the clicked button
+    fourBarLoopButton.setColour(TextButton::buttonColourId, theme->mainSliderColor);
+    fourBarLoopButton.setColour(TextButton::buttonOnColourId, theme->mainSliderColor);
+    fourBarLoopButton.setColour(Label::textColourId, Colour(20, 20, 20));
+
+    // set bassline loop
+    settingsCache.activeLoopLength = 2;
+
+}
+
+void SynergyAudioProcessorEditor::eightBarButtonClicked()
+{
+    // Deactivate other buttons
+    twoBarLoopButton.setColour(TextButton::buttonColourId, Colour(20, 20, 20));
+    twoBarLoopButton.setColour(TextButton::buttonOnColourId, Colour(20, 20, 20));
+    twoBarLoopButton.setColour(Label::textColourId, theme->mainSliderColor);
+
+    fourBarLoopButton.setColour(TextButton::buttonColourId, Colour(20, 20, 20));
+    fourBarLoopButton.setColour(TextButton::buttonOnColourId, Colour(20, 20, 20));
+    fourBarLoopButton.setColour(Label::textColourId, theme->mainSliderColor);
+
+    // Activate the clicked button
+    eightBarLoopButton.setColour(TextButton::buttonColourId, theme->mainSliderColor);
+    eightBarLoopButton.setColour(TextButton::buttonOnColourId, theme->mainSliderColor);
+    eightBarLoopButton.setColour(Label::textColourId, Colour(20, 20, 20));
+
+    // set bassline loop
+    settingsCache.activeLoopLength = 3;
+
 }

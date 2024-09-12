@@ -12,4 +12,5 @@ struct SettingsCache
 	int defaultNoteVelocity;
 	int previewBass;
 	bool toolTips;
+	int activeLoopLength;
 };

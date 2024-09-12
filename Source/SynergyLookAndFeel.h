@@ -120,6 +120,7 @@ public:
 	{
 		auto buttonArea = button.getLocalBounds();
 		g.setColour(backgroundColour);
+
 		g.fillRect(buttonArea);
 
 		if (isButtonDown || isButtonActive)
@@ -134,6 +135,7 @@ public:
 						bool shouldDrawButtonAsHighlighted, 
 						bool shouldDrawButtonAsDown) override
 	{
+		
 		g.setColour(button.findColour(juce::Label::textColourId));
 		g.drawFittedText(button.getButtonText(), button.getLocalBounds(), juce::Justification::centred , 1);
 	}

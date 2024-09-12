@@ -72,7 +72,7 @@ SettingsInfo::SettingsInfo(SettingsCache* sc, SynergyAudioProcessor* p) : settin
     addAndMakeVisible(reportABugButton);
 
     // bassline loop setting
-    basslineLoopSettingLabel.setText("Bassline Loop: ", NotificationType::dontSendNotification);
+    basslineLoopSettingLabel.setText("Default Loop: ", NotificationType::dontSendNotification);
     basslineLoopSettingLabel.setFont(16.0f);
     addAndMakeVisible(basslineLoopSettingLabel);
 

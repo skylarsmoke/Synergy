@@ -99,6 +99,15 @@ private:
     // main font
     juce::Font synergyFont;
 
+    // loop buttons
+    juce::TextButton twoBarLoopButton;
+    juce::TextButton fourBarLoopButton;
+    juce::TextButton eightBarLoopButton;
+
+    void twoBarButtonClicked();
+    void fourBarButtonClicked();
+    void eightBarButtonClicked();
+
     // settings cache
     SettingsCache settingsCache;
 
